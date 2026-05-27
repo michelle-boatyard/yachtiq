@@ -216,6 +216,7 @@ body {
 }
 .title-toggle.on::after { left: 14px; }
 .result-count { font-size: var(--fs-11); color: var(--text-secondary); letter-spacing: 0.5px; }
+.result-meta  { color: var(--text-muted); }
 .header-actions { display: flex; align-items: center; gap: var(--sp-9); flex-wrap: wrap; }
 
 /* ── List selector dropdown ── */
@@ -918,27 +919,42 @@ function selectList(name) {
 ──────────────────────────────────────────────── */
 function updatePageState() {
   const isAll = selectedList === null;
-  document.getElementById("listBtnLabel").textContent  = selectedList || "All Yachts";
-  document.getElementById("pageTitle").textContent     = selectedList || "All Yachts";
-  document.getElementById("resultCount").textContent   = isAll ? "17,675 Results Found" : "6 Results Found";
+  const cfg   = ROLE_CONFIGS[currentRole];
+
+  document.getElementById("listBtnLabel").textContent = selectedList || "All Yachts";
   document.getElementById("breadcrumb").classList.toggle("visible", !isAll);
-  document.getElementById("pdfBtn").style.display      = isAll ? "none" : "";
-  document.getElementById("emailBtn").style.display    = isAll ? "none" : "";
-  document.getElementById("shareBtn").style.display    = isAll ? "none" : "";
-  document.getElementById("selectWrap").style.display  = isAll ? "none" : "";
+  document.getElementById("pdfBtn").style.display     = isAll ? "none" : "";
+  document.getElementById("emailBtn").style.display   = isAll ? "none" : "";
+  document.getElementById("shareBtn").style.display   = isAll ? "none" : "";
+  document.getElementById("selectWrap").style.display = isAll ? "none" : "";
   document.getElementById("resetFiltersLink").classList.toggle("visible", !isAll);
 
-  /* When a named list is selected, show lock icon + toggle in title */
-  if (!isAll) {
-    const cfg       = ROLE_CONFIGS[currentRole];
-    const delList   = (cfg.delegatedLists || []).find(l => l.name === selectedList);
-    const isPrivate = delList ? delList.visibility === "private" : true;
+  if (isAll) {
+    document.getElementById("pageTitle").textContent  = "All Yachts";
+    document.getElementById("resultCount").innerHTML  = "17,675 Results Found";
+  } else {
+    /* Determine ownership + visibility for this list */
+    const delList  = (cfg.delegatedLists || []).find(l => l.name === selectedList);
+    const myList   = MY_LISTS.find(l => l.name === selectedList);
+    const isOwner  = !!myList;
+    const ownerLabel = isOwner ? "You" : (delList ? delList.broker : "You");
+    const vis      = delList ? delList.visibility : (myList ? myList.visibility : "private");
+    const visLabel = vis === "private" ? "Private" : vis === "public" ? "Public" : "N&J";
+    const isPrivate = vis === "private";
+    const count    = delList ? delList.count : (myList ? myList.count : 6);
+
+    /* Title with lock + toggle */
     document.getElementById("pageTitle").innerHTML = `
       ${selectedList}
       <i class="ti ti-lock title-lock" title="Visibility"></i>
-      <span class="title-toggle ${isPrivate ? "" : "on"}" id="visToggle" onclick="handleVisToggle()" title="${isPrivate ? "Private" : "Public"}"></span>
+      <span class="title-toggle ${isPrivate ? "" : "on"}" id="visToggle" onclick="handleVisToggle()" title="${visLabel}"></span>
     `;
+
+    /* Result count line: count · Owner: X · Visibility */
+    document.getElementById("resultCount").innerHTML =
+      `${count} Results Found <span class="result-meta">· Owner: ${ownerLabel} · ${visLabel}</span>`;
   }
+
   renderYachts();
 }
 
