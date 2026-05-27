@@ -188,6 +188,7 @@ body {
 .page-header {
   display: flex; align-items: flex-start; justify-content: space-between;
   margin-bottom: var(--sp-15); flex-wrap: wrap; gap: var(--sp-12);
+  position: relative; z-index: 10;
 }
 .page-title-wrap { display: flex; flex-direction: column; gap: 2px; }
 .page-breadcrumb {
@@ -233,8 +234,8 @@ body {
 .list-select-btn:hover { border-color: var(--text-secondary); }
 
 .list-dropdown {
-  position: absolute; top: calc(100% + 4px); left: 0;
-  min-width: 280px; background: var(--bg-card);
+  position: absolute; top: calc(100% + 4px); right: 0;
+  min-width: 300px; background: var(--bg-card);
   border: 1px solid var(--border-soft); border-radius: var(--r-lg);
   box-shadow: 0 4px 24px rgba(27,27,27,.12); z-index: 200;
   overflow: hidden; display: none;
