@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Yachts — YachtIQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css">
+<style>
+/* ── YachtIQ Design Tokens ── */
+:root {
+  --bg-base:        #fcfbf8;
+  --bg-soft:        #f5f1ec;
+  --bg-card:        #ffffff;
+  --text-primary:   #1b1b1b;
+  --text-secondary: #6a615b;
+  --text-muted:     #c5c1b9;
+  --orange:         #fe7b02;
+  --orange-gold:    #c39553;
+  --orange-dark:    #392a1e;
+  --orange-10:      #221811;
+  --orange-86:      #e2ddd7;
+  --orange-89:      #e9e4de;
+  --border:         #c5c1b9;
+  --border-soft:    #e9e4de;
+  --green:          #2b9667;
+  --green-bg:       #2b966726;
+  --red:            #d73337;
+  --red-bg:         #d7333766;
+  --blue:           #575ecf;
+  --blue-bg:        #575ecf1a;
+  --sp-4:4px; --sp-6:6px; --sp-7:7px; --sp-8:8px;
+  --sp-9:9px; --sp-12:12px; --sp-15:15px; --sp-24:24px; --sp-40:40px;
+  --font: 'DM Sans', sans-serif;
+  --fs-10:10px; --fs-11:11px; --fs-14:14px;
+  --r-sm:4px; --r-md:6px; --r-lg:8px; --r-xl:12px; --r-pill:999px;
+  --sidebar-w: 220px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  font-size: var(--fs-14);
+  color: var(--text-primary);
+  background: var(--bg-base);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Top Bar ── */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 52px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-soft);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--sp-15) 0 0;
+  z-index: 100;
+  gap: var(--sp-12);
+}
+.topbar-logo {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--sp-24);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  border-right: 1px solid var(--border-soft);
+  height: 100%;
+  gap: 0;
+}
+.topbar-logo .iq { color: var(--orange-gold); font-weight: 300; }
+.topbar-search {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-9);
+  max-width: 420px;
+  margin-left: var(--sp-15);
+}
+.search-box { position: relative; flex: 1; }
+.search-box input {
+  width: 100%;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-base);
+  font-family: var(--font);
+  font-size: var(--fs-14);
+  color: var(--text-primary);
+  padding: 0 36px 0 var(--sp-12);
+  outline: none;
+  transition: border-color .15s;
+}
+.search-box input::placeholder { color: var(--text-muted); }
+.search-box input:focus { border-color: var(--text-secondary); }
+.search-box .search-icon {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  color: var(--text-muted); font-size: 16px; pointer-events: none;
+}
+.filter-btn {
+  height: 36px; width: 36px;
+  background: var(--orange-dark); color: #fff;
+  border: none; border-radius: var(--r-md);
+  font-family: var(--font); font-size: var(--fs-14);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background .15s; flex-shrink: 0;
+}
+.filter-btn:hover { background: var(--orange); }
+.reset-filters-link {
+  font-size: var(--fs-14); color: var(--text-secondary);
+  cursor: pointer; white-space: nowrap; text-decoration: none;
+  display: none;
+}
+.reset-filters-link:hover { color: var(--text-primary); }
+.reset-filters-link.visible { display: inline; }
+
+.topbar-right {
+  margin-left: auto; display: flex; align-items: center; gap: var(--sp-9);
+}
+.user-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--orange-dark); color: #fff;
+  font-size: var(--fs-11); font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  letter-spacing: 0.5px;
+}
+.user-name {
+  font-size: var(--fs-14); color: var(--text-primary);
+  display: flex; align-items: center; gap: 4px; cursor: pointer;
+}
+.user-name i { font-size: 14px; color: var(--text-secondary); }
+
+/* ── Role switcher (prototype helper) ── */
+.role-switcher {
+  display: flex; align-items: center; gap: var(--sp-6);
+  background: var(--bg-soft); border: 1px solid var(--border-soft);
+  border-radius: var(--r-pill); padding: 3px 4px;
+}
+.role-btn {
+  font-family: var(--font); font-size: var(--fs-10); font-weight: 500;
+  color: var(--text-secondary); background: transparent; border: none;
+  border-radius: var(--r-pill); padding: 3px var(--sp-9);
+  cursor: pointer; transition: all .12s; letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+.role-btn.active { background: var(--bg-card); color: var(--text-primary); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+
+/* ── Layout Shell ── */
+.shell { display: flex; padding-top: 52px; min-height: 100vh; }
+
+/* ── Sidebar ── */
+.sidebar {
+  position: fixed; top: 52px; left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--bg-card); border-right: 1px solid var(--border-soft);
+  overflow-y: auto; z-index: 90;
+  display: flex; flex-direction: column; padding: var(--sp-12) 0;
+}
+.nav-item {
+  display: flex; align-items: center; gap: var(--sp-9);
+  padding: var(--sp-9) var(--sp-15); font-size: var(--fs-14);
+  color: var(--text-secondary); cursor: pointer; transition: all .12s;
+  border-left: 2px solid transparent; text-decoration: none;
+  user-select: none; white-space: nowrap;
+}
+.nav-item i { font-size: 17px; flex-shrink: 0; }
+.nav-item:hover { color: var(--text-primary); background: var(--bg-soft); }
+.nav-item.active {
+  color: var(--text-primary); font-weight: 500;
+  border-left-color: var(--orange); background: var(--bg-soft);
+}
+
+/* ── Main Content ── */
+.main { margin-left: var(--sidebar-w); flex: 1; padding: var(--sp-24) var(--sp-24) var(--sp-40); min-width: 0; }
+
+/* ── Page Header (All Yachts state) ── */
+.page-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: var(--sp-15); flex-wrap: wrap; gap: var(--sp-12);
+}
+.page-title-wrap { display: flex; flex-direction: column; gap: 2px; }
+.page-breadcrumb {
+  font-size: var(--fs-11); color: var(--blue); cursor: pointer;
+  display: none; align-items: center; gap: 4px; margin-bottom: var(--sp-6);
+  text-decoration: none;
+}
+.page-breadcrumb.visible { display: flex; }
+.page-breadcrumb:hover { text-decoration: underline; }
+.page-title {
+  font-size: 22px; font-weight: 500; letter-spacing: -0.5px; line-height: 28px;
+  display: flex; align-items: center; gap: var(--sp-9);
+}
+.title-lock { font-size: 16px; color: var(--text-muted); }
+.title-toggle {
+  display: inline-flex; align-items: center; cursor: pointer;
+  width: 28px; height: 16px; border-radius: 999px;
+  background: var(--border); transition: background .2s;
+  position: relative;
+}
+.title-toggle.on { background: var(--orange); }
+.title-toggle::after {
+  content: ''; position: absolute; left: 2px;
+  width: 12px; height: 12px; border-radius: 50%; background: #fff;
+  transition: left .2s; box-shadow: 0 1px 2px rgba(0,0,0,.2);
+}
+.title-toggle.on::after { left: 14px; }
+.result-count { font-size: var(--fs-11); color: var(--text-secondary); letter-spacing: 0.5px; }
+.header-actions { display: flex; align-items: center; gap: var(--sp-9); flex-wrap: wrap; }
+
+/* ── List selector dropdown ── */
+.list-select-wrap { position: relative; }
+.list-select-btn {
+  height: 36px; padding: 0 var(--sp-12);
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-14);
+  color: var(--text-primary); display: inline-flex; align-items: center;
+  gap: var(--sp-6); cursor: pointer; transition: border-color .12s;
+  white-space: nowrap; min-width: 150px;
+}
+.list-select-btn i.chevron { font-size: 14px; color: var(--text-secondary); margin-left: auto; }
+.list-select-btn:hover { border-color: var(--text-secondary); }
+
+.list-dropdown {
+  position: absolute; top: calc(100% + 4px); left: 0;
+  min-width: 280px; background: var(--bg-card);
+  border: 1px solid var(--border-soft); border-radius: var(--r-lg);
+  box-shadow: 0 4px 24px rgba(27,27,27,.12); z-index: 200;
+  overflow: hidden; display: none;
+}
+.list-dropdown.open { display: block; }
+
+/* Search within dropdown */
+.list-dropdown-search {
+  padding: var(--sp-9) var(--sp-12); border-bottom: 1px solid var(--border-soft);
+  position: relative;
+}
+.list-dropdown-search input {
+  width: 100%; height: 30px; border: 1px solid var(--border-soft);
+  border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-11);
+  color: var(--text-primary); padding: 0 30px 0 var(--sp-9);
+  outline: none; background: var(--bg-base); transition: border-color .12s;
+}
+.list-dropdown-search input:focus { border-color: var(--text-secondary); }
+.list-dropdown-search i {
+  position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+  font-size: 13px; color: var(--text-muted); pointer-events: none;
+}
+
+/* Section header inside dropdown */
+.list-dropdown-section {
+  padding: var(--sp-6) var(--sp-12) var(--sp-4);
+  font-size: var(--fs-10); font-weight: 500; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 1.5px;
+}
+
+.list-dropdown-scroll { max-height: 320px; overflow-y: auto; }
+
+.list-dropdown-item {
+  padding: var(--sp-9) var(--sp-12);
+  font-size: var(--fs-14); color: var(--text-primary);
+  cursor: pointer; transition: background .1s;
+  display: flex; align-items: flex-start; gap: var(--sp-9);
+}
+.list-dropdown-item:hover { background: var(--bg-soft); }
+.list-dropdown-item.active { background: var(--bg-soft); }
+
+.list-item-icon {
+  width: 28px; height: 28px; border-radius: var(--r-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0; margin-top: 1px;
+}
+.list-item-icon.mine  { background: var(--green-bg); color: var(--green); }
+.list-item-icon.delegated { background: var(--blue-bg); color: var(--blue); }
+.list-item-icon.all   { background: var(--bg-soft); color: var(--text-secondary); border: 1px solid var(--border-soft); }
+
+.list-item-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.list-item-name { font-size: var(--fs-14); color: var(--text-primary); font-weight: 400; }
+.list-item-meta { font-size: var(--fs-11); color: var(--text-muted); display: flex; align-items: center; gap: var(--sp-6); }
+
+.delegated-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 9px; font-weight: 500; letter-spacing: 0.5px;
+  color: var(--blue); background: var(--blue-bg);
+  padding: 1px 5px; border-radius: var(--r-pill);
+  text-transform: uppercase;
+}
+
+.list-count-chip {
+  font-size: var(--fs-10); color: var(--text-muted);
+  background: var(--bg-soft); border: 1px solid var(--border-soft);
+  border-radius: var(--r-pill); padding: 1px 6px;
+  margin-left: auto; flex-shrink: 0; align-self: center;
+}
+
+.list-dropdown-divider { height: 1px; background: var(--border-soft); margin: var(--sp-4) 0; }
+.list-dropdown-new {
+  padding: var(--sp-9) var(--sp-12);
+  font-size: var(--fs-14); color: var(--orange-gold);
+  cursor: pointer; transition: background .1s;
+  display: flex; align-items: center; gap: var(--sp-6); font-weight: 500;
+  border-top: 1px solid var(--border-soft);
+}
+.list-dropdown-new:hover { background: var(--bg-soft); }
+
+/* ── Action buttons in header ── */
+.btn-outline {
+  height: 36px; padding: 0 var(--sp-15);
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-14);
+  color: var(--text-secondary); display: inline-flex; align-items: center;
+  gap: var(--sp-6); cursor: pointer; transition: all .12s; white-space: nowrap;
+}
+.btn-outline:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+.btn-primary-sm {
+  height: 36px; padding: 0 var(--sp-15);
+  background: var(--orange-dark); color: #fff;
+  border: none; border-radius: var(--r-md);
+  font-family: var(--font); font-size: var(--fs-14); font-weight: 500;
+  display: inline-flex; align-items: center; gap: var(--sp-6);
+  cursor: pointer; transition: background .15s; white-space: nowrap;
+}
+.btn-primary-sm:hover { background: var(--orange); }
+
+.view-toggle {
+  height: 36px; width: 36px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border); border-radius: var(--r-md);
+  background: var(--bg-card); color: var(--text-secondary);
+  cursor: pointer; font-size: 17px; transition: all .12s;
+}
+.view-toggle:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+/* ── Yacht Grid ── */
+.yacht-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--sp-15);
+}
+
+/* ── Yacht Card ── */
+.yacht-card {
+  background: var(--bg-card); border: 1px solid var(--border-soft);
+  border-radius: var(--r-xl); overflow: hidden; cursor: pointer;
+  transition: box-shadow .15s, transform .15s; position: relative;
+}
+.yacht-card:hover { box-shadow: 0 4px 20px rgba(27,27,27,.09); transform: translateY(-1px); }
+
+.card-checkbox {
+  position: absolute; top: var(--sp-9); left: var(--sp-9); z-index: 10;
+  width: 20px; height: 20px; border-radius: 4px;
+  border: 1.5px solid rgba(255,255,255,.75); background: rgba(255,255,255,.2);
+  backdrop-filter: blur(4px); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: all .12s;
+}
+.card-checkbox:hover { background: var(--bg-card); border-color: var(--text-muted); }
+.card-checkbox.checked { background: var(--orange-dark); border-color: var(--orange-dark); }
+.card-checkbox.checked::after {
+  content: ''; display: block; width: 5px; height: 9px;
+  border: 2px solid #fff; border-top: none; border-left: none;
+  transform: rotate(45deg) translateY(-1px);
+}
+.card-badge {
+  position: absolute; top: var(--sp-9); right: var(--sp-9); z-index: 10;
+  padding: 3px var(--sp-9); border-radius: var(--r-pill);
+  font-size: var(--fs-10); font-weight: 500; letter-spacing: 0.5px;
+  background: var(--orange); color: #fff;
+}
+.card-img-wrap { position: relative; height: 180px; overflow: hidden; background: var(--bg-soft); }
+.card-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s; }
+.yacht-card:hover .card-img-wrap img { transform: scale(1.02); }
+.card-dots { position: absolute; bottom: var(--sp-7); left: 50%; transform: translateX(-50%); display: flex; gap: 4px; }
+.card-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,.5); }
+.card-dot.active { background: #fff; }
+.card-img-placeholder {
+  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--bg-soft) 0%, var(--orange-86) 100%);
+}
+.card-img-placeholder i { font-size: 40px; color: var(--text-muted); }
+.card-body { padding: var(--sp-12); }
+.card-name {
+  font-size: 13px; font-weight: 700; letter-spacing: 1.5px;
+  color: var(--orange-gold); text-transform: uppercase;
+  margin-bottom: var(--sp-6); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.card-row {
+  display: flex; gap: var(--sp-12); font-size: var(--fs-11);
+  color: var(--text-secondary); margin-bottom: var(--sp-4); flex-wrap: wrap;
+}
+.card-row .label { color: var(--text-muted); }
+.card-row .val { color: var(--text-primary); font-weight: 500; }
+.card-divider { height: 1px; background: var(--border-soft); margin: var(--sp-9) 0; }
+.card-meta-row { display: flex; justify-content: space-between; font-size: var(--fs-11); color: var(--text-secondary); }
+.card-meta-row .label { color: var(--text-muted); }
+.card-meta-row .val { color: var(--text-primary); }
+.card-editable-row {
+  display: flex; align-items: center; gap: var(--sp-6);
+  font-size: var(--fs-11); color: var(--text-muted);
+  margin-top: 3px; cursor: pointer;
+}
+.card-editable-row:hover { color: var(--text-secondary); }
+.card-editable-row i { font-size: 12px; }
+
+/* ── Modals ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(27,27,27,.35); z-index: 500;
+  align-items: center; justify-content: center; padding: var(--sp-15);
+}
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--bg-card); border-radius: var(--r-xl);
+  width: 100%; max-width: 520px; max-height: calc(100vh - 40px);
+  overflow-y: auto; box-shadow: 0 8px 40px rgba(27,27,27,.18);
+  padding: var(--sp-24);
+}
+.modal-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: var(--sp-24);
+}
+.modal-title { font-size: 18px; font-weight: 500; letter-spacing: -0.5px; }
+.modal-close {
+  width: 30px; height: 30px; border-radius: var(--r-md);
+  border: 1px solid var(--border); background: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: var(--text-secondary); transition: all .12s;
+}
+.modal-close:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+.modal-section { margin-bottom: var(--sp-24); }
+.modal-label {
+  font-size: var(--fs-10); font-weight: 500; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: var(--sp-9);
+  display: block;
+}
+.modal-input {
+  width: 100%; height: 40px; border: none; border-bottom: 1.5px solid var(--border);
+  font-family: var(--font); font-size: 16px; color: var(--text-primary);
+  background: transparent; outline: none; padding: 0 4px;
+  transition: border-color .15s;
+}
+.modal-input:focus { border-bottom-color: var(--orange-dark); }
+.modal-input::placeholder { color: var(--text-muted); }
+
+/* Visibility radio group */
+.radio-group { display: flex; gap: var(--sp-24); flex-wrap: wrap; }
+.radio-item { display: flex; align-items: center; gap: var(--sp-9); cursor: pointer; }
+.radio-item input[type="radio"] {
+  appearance: none; -webkit-appearance: none;
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 1.5px solid var(--border); cursor: pointer;
+  transition: all .12s; position: relative; flex-shrink: 0;
+}
+.radio-item input[type="radio"]:checked {
+  border-color: var(--orange-dark); border-width: 5px;
+}
+.radio-item span { font-size: var(--fs-14); color: var(--text-primary); }
+
+/* List owner selector */
+.owner-select-wrap {
+  background: var(--bg-soft); border: 1px solid var(--border-soft);
+  border-radius: var(--r-lg); overflow: hidden;
+  display: none; /* shown only for assistant role */
+}
+.owner-select-wrap.visible { display: block; }
+.owner-option {
+  display: flex; align-items: center; gap: var(--sp-12);
+  padding: var(--sp-12) var(--sp-15); cursor: pointer;
+  transition: background .1s; border-bottom: 1px solid var(--border-soft);
+}
+.owner-option:last-child { border-bottom: none; }
+.owner-option:hover { background: var(--orange-89); }
+.owner-option.selected { background: var(--bg-card); }
+.owner-radio {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 1.5px solid var(--border); flex-shrink: 0;
+  transition: all .12s; position: relative;
+}
+.owner-option.selected .owner-radio {
+  border-color: var(--orange-dark); border-width: 5px;
+}
+.owner-avatar-sm {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--fs-11); font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.owner-info { flex: 1; min-width: 0; }
+.owner-name { font-size: var(--fs-14); color: var(--text-primary); font-weight: 400; }
+.owner-role { font-size: var(--fs-11); color: var(--text-muted); }
+
+/* Confirmation modal */
+.confirm-modal { max-width: 380px; }
+.confirm-icon {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; margin-bottom: var(--sp-15);
+}
+.confirm-icon.warn { background: #fff7ed; color: var(--orange); }
+.confirm-body { font-size: var(--fs-14); color: var(--text-secondary); line-height: 1.6; margin-bottom: var(--sp-24); }
+.confirm-body strong { color: var(--text-primary); }
+
+.modal-footer { display: flex; justify-content: flex-end; gap: var(--sp-9); margin-top: var(--sp-24); }
+.btn-cancel {
+  height: 36px; padding: 0 var(--sp-24);
+  background: none; border: 1px solid var(--border); border-radius: var(--r-md);
+  font-family: var(--font); font-size: var(--fs-14); color: var(--text-secondary);
+  cursor: pointer; transition: background .12s;
+}
+.btn-cancel:hover { background: var(--bg-soft); }
+.btn-confirm {
+  height: 36px; padding: 0 var(--sp-24);
+  background: var(--orange-dark); color: #fff; border: none;
+  border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-14);
+  font-weight: 500; cursor: pointer; transition: background .15s;
+}
+.btn-confirm:hover { background: var(--orange); }
+.btn-danger {
+  height: 36px; padding: 0 var(--sp-24);
+  background: none; color: var(--red); border: 1px solid var(--red-bg);
+  border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-14);
+  cursor: pointer; transition: all .12s;
+}
+.btn-danger:hover { background: var(--red-bg); }
+
+/* ── Bottom nav (mobile) ── */
+.bottom-nav {
+  display: none; position: fixed; bottom: 0; left: 0; right: 0;
+  height: 56px; background: var(--bg-card);
+  border-top: 1px solid var(--border-soft); z-index: 100;
+  justify-content: space-around; align-items: center; padding: 0 var(--sp-9);
+}
+.bottom-nav-item {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  font-size: 9px; color: var(--text-muted); cursor: pointer;
+  padding: var(--sp-6) var(--sp-12); border-radius: var(--r-md); transition: color .12s;
+}
+.bottom-nav-item i { font-size: 20px; }
+.bottom-nav-item.active { color: var(--orange); }
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  :root { --sidebar-w: 48px; }
+  .sidebar { width: 48px; }
+  .nav-item span { display: none; }
+  .nav-item { justify-content: center; padding: var(--sp-9) 0; border-left: none; }
+  .nav-item.active { border-left: none; background: var(--bg-soft); }
+  .topbar-logo { width: 48px; padding: 0; justify-content: center; border-right: 1px solid var(--border-soft); }
+  .topbar-logo .logo-full { display: none; }
+  .topbar-logo .logo-short { display: flex; }
+}
+@media (min-width: 1025px) {
+  .topbar-logo .logo-short { display: none; }
+}
+@media (max-width: 640px) {
+  :root { --sidebar-w: 0px; }
+  .sidebar { display: none; }
+  .main { margin-left: 0; padding: var(--sp-15) var(--sp-12) 72px; }
+  .topbar-logo { width: auto; padding: 0 var(--sp-15); border-right: none; }
+  .topbar-search { max-width: none; flex: 1; }
+  .bottom-nav { display: flex; }
+  .user-name .user-label { display: none; }
+  .role-switcher { display: none; }
+}
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+</style>
+</head>
+<body>
+
+<!-- ── Top Bar ── -->
+<header class="topbar">
+  <div class="topbar-logo">
+    <span class="logo-full">YACHT<span class="iq">IQ</span></span>
+    <span class="logo-short" style="color:var(--text-primary);font-size:13px;font-weight:700;letter-spacing:2px">Y<span style="color:var(--orange-gold);font-weight:300">IQ</span></span>
+  </div>
+  <div class="topbar-search">
+    <div class="search-box">
+      <input type="text" id="yachtSearch" placeholder="Search by Yacht Name">
+      <i class="ti ti-search search-icon"></i>
+    </div>
+    <button class="filter-btn" title="Filters"><i class="ti ti-adjustments-horizontal"></i></button>
+    <a class="reset-filters-link" id="resetFiltersLink" onclick="resetToAllYachts()">Reset Filters</a>
+  </div>
+
+  <!-- Role switcher — prototype helper -->
+  <div class="role-switcher">
+    <button class="role-btn" data-role="broker" onclick="switchRole('broker')">Broker</button>
+    <button class="role-btn active" data-role="assistant" onclick="switchRole('assistant')">Assistant</button>
+    <button class="role-btn" data-role="dual" onclick="switchRole('dual')">Dual Role</button>
+  </div>
+
+  <div class="topbar-right">
+    <div class="user-avatar" id="userAvatar">S</div>
+    <span class="user-name">
+      <span class="user-label" id="userName">Sofia Reyes</span>
+      <i class="ti ti-chevron-down"></i>
+    </span>
+  </div>
+</header>
+
+<div class="shell">
+  <!-- ── Sidebar ── -->
+  <nav class="sidebar">
+    <a class="nav-item" href="#"><i class="ti ti-world"></i><span>Dashboard</span></a>
+    <a class="nav-item active" href="#"><i class="ti ti-ship"></i><span>Yachts</span></a>
+    <a class="nav-item" href="#"><i class="ti ti-map-pin"></i><span>Yachts Show</span></a>
+    <a class="nav-item" href="#"><i class="ti ti-list"></i><span>Lists &amp; Shows</span></a>
+    <a class="nav-item" href="#"><i class="ti ti-bell"></i><span>Yachts Updates</span></a>
+    <a class="nav-item" href="#"><i class="ti ti-sparkles"></i><span>Yacht Matches</span></a>
+    <a class="nav-item" href="#"><i class="ti ti-chart-bar"></i><span>Market Intelligence</span></a>
+    <a class="nav-item" href="#"><i class="ti ti-anchor"></i><span>Shipyards</span></a>
+    <a class="nav-item" href="#"><i class="ti ti-mail"></i><span>Emails</span></a>
+    <a class="nav-item" href="#"><i class="ti ti-briefcase"></i><span>Centrals &amp; Deals</span></a>
+  </nav>
+
+  <!-- ── Main Content ── -->
+  <main class="main">
+    <div class="page-header">
+      <div class="page-title-wrap">
+        <!-- Breadcrumb — shown when a named list is selected -->
+        <a class="page-breadcrumb" id="breadcrumb" onclick="resetToAllYachts()">
+          <i class="ti ti-arrow-left" style="font-size:11px"></i> All Yachts
+        </a>
+        <h1 class="page-title" id="pageTitle">
+          All Yachts
+        </h1>
+        <span class="result-count" id="resultCount">17,675 Results Found</span>
+      </div>
+      <div class="header-actions" id="headerActions">
+        <!-- List selector -->
+        <div class="list-select-wrap" id="listWrap">
+          <button class="list-select-btn" id="listBtn" onclick="toggleListDropdown()">
+            <span id="listBtnLabel">All Yachts</span>
+            <i class="ti ti-chevron-down chevron"></i>
+          </button>
+          <div class="list-dropdown" id="listDropdown">
+            <!-- Dropdown search -->
+            <div class="list-dropdown-search">
+              <input type="text" placeholder="Search lists..." id="listSearch" oninput="filterListDropdown()">
+              <i class="ti ti-search"></i>
+            </div>
+            <div class="list-dropdown-scroll" id="listDropdownScroll">
+              <!-- Rendered by JS -->
+            </div>
+            <div class="list-dropdown-new" onclick="openCreateModal()">
+              <i class="ti ti-plus" style="font-size:13px"></i> New Yacht List
+            </div>
+          </div>
+        </div>
+        <!-- Select dropdown (shown when a list is active) -->
+        <div class="list-select-wrap" id="selectWrap" style="display:none">
+          <button class="list-select-btn" style="min-width:120px">
+            <span>Select</span>
+            <i class="ti ti-chevron-down chevron"></i>
+          </button>
+        </div>
+        <!-- PDF button (shown when a named list is active) -->
+        <button class="btn-outline" id="pdfBtn" style="display:none">
+          <i class="ti ti-cloud-upload" style="font-size:15px"></i> PDF
+        </button>
+        <!-- Send Email (shown when list active) -->
+        <button class="btn-outline" id="emailBtn" style="display:none">
+          <i class="ti ti-send" style="font-size:15px"></i> Send Email
+        </button>
+        <!-- Share List (shown when list active) -->
+        <button class="btn-primary-sm" id="shareBtn" style="display:none">
+          <i class="ti ti-share" style="font-size:15px"></i> Share List
+        </button>
+        <!-- View toggle -->
+        <button class="view-toggle"><i class="ti ti-layout-list"></i></button>
+      </div>
+    </div>
+
+    <!-- Yacht Grid -->
+    <div class="yacht-grid" id="yachtGrid"></div>
+  </main>
+</div>
+
+<!-- ── Bottom Nav (mobile) ── -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-item"><i class="ti ti-world"></i><span>Home</span></div>
+  <div class="bottom-nav-item active"><i class="ti ti-ship"></i><span>Yachts</span></div>
+  <div class="bottom-nav-item"><i class="ti ti-list"></i><span>Lists</span></div>
+  <div class="bottom-nav-item"><i class="ti ti-bell"></i><span>Updates</span></div>
+  <div class="bottom-nav-item"><i class="ti ti-chart-bar"></i><span>Market</span></div>
+</nav>
+
+<!-- ── Create List Modal ── -->
+<div class="modal-overlay" id="createModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Create New Yacht Selection</span>
+      <button class="modal-close" onclick="closeModal('createModal')"><i class="ti ti-x"></i></button>
+    </div>
+
+    <!-- List name -->
+    <div class="modal-section">
+      <input class="modal-input" type="text" placeholder="List name" id="newListName">
+    </div>
+
+    <!-- List owner — only shown for assistant / dual-role -->
+    <div class="modal-section" id="ownerSection">
+      <label class="modal-label">List owner</label>
+      <div class="owner-select-wrap visible" id="ownerOptions">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Visibility -->
+    <div class="modal-section">
+      <label class="modal-label">Visibility</label>
+      <div class="radio-group" id="visibilityGroup">
+        <label class="radio-item">
+          <input type="radio" name="visibility" value="public"> <span>Public</span>
+        </label>
+        <label class="radio-item">
+          <input type="radio" name="visibility" value="private"> <span>Private</span>
+        </label>
+        <label class="radio-item">
+          <input type="radio" name="visibility" value="nj" checked> <span>N&amp;J</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('createModal')">Close</button>
+      <button class="btn-confirm" onclick="createList()">Create list</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Visibility Confirmation Modal ── -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal confirm-modal">
+    <div class="confirm-icon warn"><i class="ti ti-lock-open"></i></div>
+    <div class="modal-title" style="margin-bottom:var(--sp-9)">Make this list public?</div>
+    <div class="confirm-body">
+      You're changing <strong id="confirmListName">Anton Private Selection</strong> from <strong>Private</strong> to <strong>Public</strong>.<br><br>
+      All users with the link will be able to view this list. This action can be reversed at any time.
+    </div>
+    <div class="modal-footer" style="margin-top:0">
+      <button class="btn-cancel" onclick="closeModal('confirmModal')">Keep Private</button>
+      <button class="btn-confirm" onclick="closeModal('confirmModal')">Make Public</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ────────────────────────────────────────────────
+   DATA
+──────────────────────────────────────────────── */
+const ROLE_CONFIGS = {
+  broker: {
+    userName: "James Harrington",
+    initials: "J",
+    delegatedBrokers: [],
+    ownedByMe: ["Palm Beach Follow-ups", "Dubai Selection", "Private list"],
+    delegatedLists: [],
+  },
+  assistant: {
+    userName: "Sofia Reyes",
+    initials: "S",
+    delegatedBrokers: [
+      { id:"af", name:"Anton Farber",    initials:"A", color:"#392a1e" },
+      { id:"mh", name:"Maryanne Hanlon", initials:"M", color:"#575ecf" },
+    ],
+    ownedByMe: ["Palm Beach Follow-ups"],
+    delegatedLists: [
+      { name:"Anton Private Selection",  broker:"Anton Farber",    brokerId:"af", count:12, visibility:"private" },
+      { name:"Dubai Selection",          broker:"Anton Farber",    brokerId:"af", count:8,  visibility:"nj"      },
+      { name:"Maryanne Mediterranean",   broker:"Maryanne Hanlon", brokerId:"mh", count:5,  visibility:"private" },
+    ],
+  },
+  dual: {
+    userName: "Carlos Medina",
+    initials: "C",
+    delegatedBrokers: [
+      { id:"af", name:"Anton Farber", initials:"A", color:"#392a1e" },
+    ],
+    ownedByMe: ["Palm Beach Follow-ups", "Dubai list", "Private list"],
+    delegatedLists: [
+      { name:"Anton Private Selection", broker:"Anton Farber", brokerId:"af", count:12, visibility:"private" },
+    ],
+  },
+};
+
+const MY_LISTS = [
+  { name:"Palm Beach Follow-ups", count:6,  visibility:"nj"     },
+  { name:"Dubai Selection",       count:8,  visibility:"private" },
+  { name:"Private list",          count:3,  visibility:"private" },
+];
+
+const YACHTS = [
+  { id:1, name:"REV OCEAN",       price:null,          loa:"639 ft / 194.9 m",   build:2027, guests:"36/-",    location:null,                       builder:"Vard Group", brokerage:null, charter:false, img:"https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=600&q=80" },
+  { id:2, name:"AZZAM",           price:null,          loa:"590 ft 7 in / 180 m", build:2013, guests:"36/-",   location:null,                       builder:"Lurssen",    brokerage:null, charter:false, img:"https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=600&q=80" },
+  { id:3, name:"SCENIC ECLIPSE",  price:null,          loa:"551 ft / 168 m",     build:2018, guests:"200/115", location:"Dubai, UAE",               builder:"Lüi Maj",    brokerage:null, charter:true,  img:"https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80" },
+  { id:4, name:"FULK AL SALAMAH", price:null,          loa:"538 ft / 164 m",     build:2016, guests:"0/-",     location:"Muscat Governorate, Oman", builder:"Mariotti",   brokerage:null, charter:false, img:"https://images.unsplash.com/photo-1543270220-873c2a75e4aa?w=600&q=80" },
+  { id:5, name:"LADY ANASTASIA",  price:"€99,000,000", loa:"52 m",               build:2018, guests:"12/9",    location:"Monaco, France",           builder:"Lürssen",    brokerage:"Fraser Yachts",   charter:false, img:"https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=600&q=80" },
+  { id:6, name:"SILVER MOON",     price:"€52,000,000", loa:"63 m",               build:2021, guests:"14/11",   location:"Palma de Mallorca, Spain", builder:"Benetti",    brokerage:"Fraser Yachts",   charter:false, img:"https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=600&q=80" },
+];
+
+/* ────────────────────────────────────────────────
+   STATE
+──────────────────────────────────────────────── */
+let currentRole    = "assistant";
+let selectedList   = null;   // null = All Yachts
+let selectedOwner  = "myself";
+
+/* ────────────────────────────────────────────────
+   ROLE SWITCHING
+──────────────────────────────────────────────── */
+function switchRole(role) {
+  currentRole = role;
+  document.querySelectorAll(".role-btn").forEach(b => b.classList.toggle("active", b.dataset.role === role));
+  const cfg = ROLE_CONFIGS[role];
+  document.getElementById("userName").textContent    = cfg.userName;
+  document.getElementById("userAvatar").textContent  = cfg.initials;
+  resetToAllYachts();
+  renderDropdownItems();
+}
+
+/* ────────────────────────────────────────────────
+   LIST DROPDOWN
+──────────────────────────────────────────────── */
+function toggleListDropdown() {
+  const dd = document.getElementById("listDropdown");
+  dd.classList.toggle("open");
+  if (dd.classList.contains("open")) {
+    document.getElementById("listSearch").value = "";
+    filterListDropdown();
+    setTimeout(() => document.getElementById("listSearch").focus(), 50);
+  }
+}
+
+function renderDropdownItems(filter = "") {
+  const cfg     = ROLE_CONFIGS[currentRole];
+  const scroll  = document.getElementById("listDropdownScroll");
+  const q       = filter.toLowerCase();
+
+  /* Build list data for this role */
+  const myLists = MY_LISTS.filter(l => cfg.ownedByMe.includes(l.name));
+
+  let html = "";
+
+  /* ── All Yachts ── */
+  if (!q || "all yachts".includes(q)) {
+    html += listItem({ name:"All Yachts", meta:"", type:"all", count:null, active: selectedList === null });
+  }
+
+  /* ── My lists ── */
+  const filteredMine = myLists.filter(l => !q || l.name.toLowerCase().includes(q));
+  if (filteredMine.length) {
+    html += `<div class="list-dropdown-section">My Lists</div>`;
+    filteredMine.forEach(l => {
+      html += listItem({ name: l.name, meta:"Owner: You", type:"mine", count: l.count, active: selectedList === l.name });
+    });
+  }
+
+  /* ── Delegated lists ── */
+  const filteredDel = (cfg.delegatedLists || []).filter(l => !q || l.name.toLowerCase().includes(q));
+  if (filteredDel.length) {
+    html += `<div class="list-dropdown-section">Delegated Lists</div>`;
+    filteredDel.forEach(l => {
+      html += listItem({ name: l.name, meta:`Owner: ${l.broker}`, type:"delegated", count: l.count, active: selectedList === l.name, broker: l.broker });
+    });
+  }
+
+  /* No broker access message */
+  if (currentRole === "broker" && !cfg.delegatedLists?.length) {
+    /* nothing extra to show */
+  }
+
+  scroll.innerHTML = html || `<div style="padding:var(--sp-12) var(--sp-15);font-size:var(--fs-11);color:var(--text-muted)">No lists found</div>`;
+}
+
+function listItem({ name, meta, type, count, active, broker }) {
+  const iconClass = type === "mine" ? "mine" : type === "delegated" ? "delegated" : "all";
+  const icon      = type === "mine" ? "ti-user" : type === "delegated" ? "ti-users" : "ti-list";
+  const badge     = type === "delegated" ? `<span class="delegated-badge"><i class="ti ti-share" style="font-size:9px"></i> Delegated</span>` : "";
+  const chip      = count !== null ? `<span class="list-count-chip">${count}</span>` : "";
+  return `
+    <div class="list-dropdown-item${active ? " active" : ""}" onclick="selectList('${name.replace(/'/g,"\\'")}')">
+      <div class="list-item-icon ${iconClass}"><i class="ti ${icon}"></i></div>
+      <div class="list-item-body">
+        <span class="list-item-name">${name}</span>
+        <span class="list-item-meta">${meta} ${badge}</span>
+      </div>
+      ${chip}
+    </div>`;
+}
+
+function filterListDropdown() {
+  renderDropdownItems(document.getElementById("listSearch").value);
+}
+
+function selectList(name) {
+  selectedList = name === "All Yachts" ? null : name;
+  document.getElementById("listDropdown").classList.remove("open");
+  updatePageState();
+  renderDropdownItems();
+}
+
+/* ────────────────────────────────────────────────
+   PAGE STATE (All Yachts vs Named List)
+──────────────────────────────────────────────── */
+function updatePageState() {
+  const isAll = selectedList === null;
+  document.getElementById("listBtnLabel").textContent  = selectedList || "All Yachts";
+  document.getElementById("pageTitle").textContent     = selectedList || "All Yachts";
+  document.getElementById("resultCount").textContent   = isAll ? "17,675 Results Found" : "6 Results Found";
+  document.getElementById("breadcrumb").classList.toggle("visible", !isAll);
+  document.getElementById("pdfBtn").style.display      = isAll ? "none" : "";
+  document.getElementById("emailBtn").style.display    = isAll ? "none" : "";
+  document.getElementById("shareBtn").style.display    = isAll ? "none" : "";
+  document.getElementById("selectWrap").style.display  = isAll ? "none" : "";
+  document.getElementById("resetFiltersLink").classList.toggle("visible", !isAll);
+
+  /* When a named list is selected, show lock icon + toggle in title */
+  if (!isAll) {
+    const cfg       = ROLE_CONFIGS[currentRole];
+    const delList   = (cfg.delegatedLists || []).find(l => l.name === selectedList);
+    const isPrivate = delList ? delList.visibility === "private" : true;
+    document.getElementById("pageTitle").innerHTML = `
+      ${selectedList}
+      <i class="ti ti-lock title-lock" title="Visibility"></i>
+      <span class="title-toggle ${isPrivate ? "" : "on"}" id="visToggle" onclick="handleVisToggle()" title="${isPrivate ? "Private" : "Public"}"></span>
+    `;
+  }
+  renderYachts();
+}
+
+function handleVisToggle() {
+  const toggle = document.getElementById("visToggle");
+  const isNowPublic = !toggle.classList.contains("on");
+  if (isNowPublic) {
+    document.getElementById("confirmListName").textContent = selectedList;
+    openModal("confirmModal");
+  } else {
+    toggle.classList.remove("on");
+  }
+}
+
+function resetToAllYachts() {
+  selectedList = null;
+  updatePageState();
+  renderDropdownItems();
+}
+
+/* ────────────────────────────────────────────────
+   CREATE MODAL
+──────────────────────────────────────────────── */
+function openCreateModal() {
+  document.getElementById("listDropdown").classList.remove("open");
+  const cfg = ROLE_CONFIGS[currentRole];
+  const hasDelegate = cfg.delegatedBrokers && cfg.delegatedBrokers.length > 0;
+
+  /* Build owner options */
+  const ownerSection = document.getElementById("ownerSection");
+  ownerSection.style.display = hasDelegate ? "block" : "none";
+
+  if (hasDelegate) {
+    selectedOwner = "myself";
+    const opts = document.getElementById("ownerOptions");
+    opts.innerHTML = `
+      <div class="owner-option selected" data-owner="myself" onclick="selectOwner('myself')">
+        <div class="owner-radio"></div>
+        <div class="owner-avatar-sm" style="background:var(--orange-dark)">${cfg.initials}</div>
+        <div class="owner-info">
+          <div class="owner-name">Myself</div>
+          <div class="owner-role">${cfg.userName}</div>
+        </div>
+      </div>
+      ${cfg.delegatedBrokers.map(b => `
+        <div class="owner-option" data-owner="${b.id}" onclick="selectOwner('${b.id}')">
+          <div class="owner-radio"></div>
+          <div class="owner-avatar-sm" style="background:${b.color}">${b.initials}</div>
+          <div class="owner-info">
+            <div class="owner-name">${b.name}</div>
+            <div class="owner-role">Broker</div>
+          </div>
+        </div>
+      `).join("")}
+    `;
+  }
+
+  /* If a delegated list is active, pre-select that broker */
+  if (selectedList && hasDelegate) {
+    const delList = (cfg.delegatedLists || []).find(l => l.name === selectedList);
+    if (delList) {
+      selectOwner(delList.brokerId);
+    }
+  }
+
+  document.getElementById("newListName").value = "";
+  openModal("createModal");
+}
+
+function selectOwner(id) {
+  selectedOwner = id;
+  document.querySelectorAll(".owner-option").forEach(el => {
+    el.classList.toggle("selected", el.dataset.owner === id);
+  });
+}
+
+function createList() {
+  const name = document.getElementById("newListName").value.trim();
+  if (!name) { document.getElementById("newListName").focus(); return; }
+  closeModal("createModal");
+  /* In a real app: API call here. For prototype, select the new list. */
+  selectedList = name;
+  updatePageState();
+  renderDropdownItems();
+}
+
+/* ────────────────────────────────────────────────
+   MODAL HELPERS
+──────────────────────────────────────────────── */
+function openModal(id)  { document.getElementById(id).classList.add("open"); }
+function closeModal(id) { document.getElementById(id).classList.remove("open"); }
+
+document.querySelectorAll(".modal-overlay").forEach(ov => {
+  ov.addEventListener("click", e => { if (e.target === ov) ov.classList.remove("open"); });
+});
+
+/* ────────────────────────────────────────────────
+   YACHT GRID
+──────────────────────────────────────────────── */
+function renderYachts() {
+  const showList = selectedList !== null;
+  const yachts   = showList ? YACHTS.slice(0, 4) : YACHTS; /* simulate filter */
+  const grid     = document.getElementById("yachtGrid");
+
+  grid.innerHTML = yachts.map(y => `
+    <div class="yacht-card">
+      <div class="card-checkbox" id="chk-${y.id}" onclick="toggleCheck(${y.id})"></div>
+      ${y.charter ? `<div class="card-badge">For Charter</div>` : ""}
+      <div class="card-img-wrap">
+        <img src="${y.img}" alt="${y.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=card-img-placeholder><i class=\\'ti ti-ship\\'></i></div>'">
+        <div class="card-dots">
+          <div class="card-dot active"></div><div class="card-dot"></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${y.name}</div>
+        <div class="card-row">
+          <span><span class="label">Price </span><span class="val">${y.price || "–"}</span></span>
+          <span><span class="label">LOA </span><span class="val">${y.loa}</span></span>
+        </div>
+        <div class="card-row">
+          <span><span class="label">Build </span><span class="val">${y.build}</span></span>
+          <span><span class="label">Guest </span><span class="val">${y.guests}</span></span>
+        </div>
+        <div class="card-row">
+          <span><span class="label">Location </span><span class="val">${y.location || "–"}</span></span>
+        </div>
+        <div class="card-divider"></div>
+        <div class="card-meta-row">
+          <span><span class="label">Builder </span><span class="val">${y.builder}</span></span>
+        </div>
+        <div class="card-meta-row" style="margin-top:3px">
+          <span><span class="label">Brokerage </span><span class="val">${y.brokerage || "–"}</span></span>
+        </div>
+        ${showList ? `
+        <div class="card-divider"></div>
+        <div class="card-editable-row"><i class="ti ti-pencil"></i> List Location</div>
+        <div class="card-editable-row"><i class="ti ti-pencil"></i> Observations</div>
+        ` : ""}
+      </div>
+    </div>
+  `).join("");
+}
+
+function toggleCheck(id) {
+  document.getElementById("chk-" + id).classList.toggle("checked");
+}
+
+/* ────────────────────────────────────────────────
+   CLOSE DROPDOWN ON OUTSIDE CLICK
+──────────────────────────────────────────────── */
+document.addEventListener("click", e => {
+  if (!document.getElementById("listWrap").contains(e.target)) {
+    document.getElementById("listDropdown").classList.remove("open");
+  }
+});
+
+/* ────────────────────────────────────────────────
+   INIT
+──────────────────────────────────────────────── */
+renderDropdownItems();
+renderYachts();
+</script>
+</body>
+</html>
