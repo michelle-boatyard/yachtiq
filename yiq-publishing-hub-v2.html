@@ -697,9 +697,480 @@ tr:hover td { background: var(--bg-base); }
   .content { padding: var(--sp-15) var(--sp-12); }
 }
 @media (min-width: 641px) { .bottom-bar { display: none; } }
+
+/* ── YACHT DETAIL STYLES ── */
+
+:root {
+  --bg-base: #fcfbf8;
+  --bg-soft: #f5f1ec;
+  --bg-card: #ffffff;
+  --text-primary: #1b1b1b;
+  --text-secondary: #6a615b;
+  --text-muted: #c5c1b9;
+  --orange: #fe7b02;
+  --orange-gold: #c39553;
+  --orange-10: #221811;
+  --orange-89: #e9e4de;
+  --orange-86: #e2ddd7;
+  --border: #c5c1b9;
+  --border-soft: #e9e4de;
+  --green: #2b9667;
+  --green-bg: #2b966726;
+  --red: #d73337;
+  --red-bg: #d7333766;
+  --red-strong: #fe3f21;
+  --blue: #575ecf;
+  --blue-bg: #575ecf1a;
+  --amber-text: #906847;
+  --amber-bg: #fef3e2;
+  --font: 'DM Sans', sans-serif;
+  --fs-10: 10px; --fs-11: 11px; --fs-14: 14px;
+  --sp-4: 4px; --sp-6: 6px; --sp-7: 7px; --sp-8: 8px;
+  --sp-9: 9px; --sp-12: 12px; --sp-15: 15px; --sp-24: 24px; --sp-40: 40px;
+  --r-sm: 4px; --r-md: 6px; --r-lg: 8px; --r-xl: 12px; --r-pill: 999px;
+  --sidebar-w: 220px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  font-size: var(--fs-14);
+  color: var(--text-primary);
+  background: var(--bg-soft);
+  min-height: 100vh;
+  display: flex;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: var(--bg-card);
+  border-right: 1px solid var(--orange-89);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 100;
+  overflow-y: auto;
+}
+.sidebar-logo {
+  padding: var(--sp-24) var(--sp-15) var(--sp-15);
+  font-size: 13px; font-weight: 700; letter-spacing: 1.98px;
+  color: var(--text-primary); text-transform: uppercase;
+  border-bottom: 1px solid var(--border-soft); margin-bottom: var(--sp-9); flex-shrink: 0;
+}
+.sidebar-logo span { color: var(--orange-gold); font-weight: 300; }
+.sidebar-user {
+  padding: var(--sp-9) var(--sp-15);
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border-soft); margin-bottom: var(--sp-9);
+}
+.sidebar-user-name { font-size: var(--fs-14); font-weight: 500; }
+.nav { flex: 1; padding: var(--sp-4) 0; overflow-y: auto; }
+.nav-item {
+  display: flex; align-items: center; gap: var(--sp-9);
+  padding: var(--sp-9) var(--sp-15); font-size: var(--fs-14);
+  color: var(--text-secondary); cursor: pointer;
+  transition: background .1s, color .1s; white-space: nowrap; text-decoration: none;
+}
+.nav-item i { font-size: 17px; flex-shrink: 0; }
+.nav-item:hover { background: var(--bg-soft); color: var(--text-primary); }
+.nav-item.active {
+  background: var(--bg-soft); color: var(--text-primary); font-weight: 500;
+  border-left: 2px solid var(--orange); padding-left: calc(var(--sp-15) - 2px);
+}
+.nav-item.active i { color: var(--orange); }
+
+/* MAIN */
+.main { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
+
+/* TOPBAR */
+.topbar {
+  background: var(--bg-card); border-bottom: 1px solid var(--border-soft);
+  padding: 0 var(--sp-24); height: 52px;
+  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+}
+.topbar-search { position: relative; display: flex; align-items: center; }
+.topbar-search i { position: absolute; left: 9px; font-size: 16px; color: var(--text-muted); pointer-events: none; }
+.topbar-search input {
+  font-family: var(--font); font-size: var(--fs-14); color: var(--text-primary);
+  background: var(--bg-soft); border: 1px solid var(--border-soft);
+  border-radius: var(--r-xl); padding: var(--sp-7) var(--sp-12) var(--sp-7) 32px;
+  width: 240px; outline: none; transition: border-color .15s;
+}
+.topbar-search input::placeholder { color: var(--text-muted); }
+.topbar-user { font-size: var(--fs-14); font-weight: 500; color: var(--text-primary); display: flex; align-items: center; gap: var(--sp-6); cursor: pointer; }
+
+/* CONTENT */
+.content { padding: var(--sp-24); flex: 1; max-width: 1152px; width: 100%; }
+
+/* BACK + ACTIONS BAR */
+.page-actions {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: var(--sp-24);
+}
+.back-btn {
+  display: inline-flex; align-items: center; gap: var(--sp-6);
+  font-size: var(--fs-14); color: var(--text-secondary);
+  background: none; border: none; cursor: pointer; font-family: var(--font);
+  padding: 0; transition: color .12s;
+}
+.back-btn:hover { color: var(--text-primary); }
+.actions-right { display: flex; gap: var(--sp-9); }
+
+.btn-outline {
+  display: inline-flex; align-items: center; gap: var(--sp-6);
+  background: none; border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: var(--sp-7) var(--sp-15);
+  font-size: var(--fs-14); color: var(--text-secondary);
+  cursor: pointer; font-family: var(--font); transition: all .12s;
+}
+.btn-outline:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+.btn-dark {
+  display: inline-flex; align-items: center; gap: var(--sp-6);
+  background: var(--orange-10); border: none;
+  border-radius: var(--r-md); padding: var(--sp-7) var(--sp-15);
+  font-size: var(--fs-14); color: #fff; font-weight: 500;
+  cursor: pointer; font-family: var(--font); transition: background .12s;
+}
+.btn-dark:hover { background: var(--orange); }
+
+/* YACHT HERO */
+.yacht-hero {
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-xl);
+  padding: var(--sp-24);
+  margin-bottom: var(--sp-24);
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: var(--sp-24);
+}
+@media (max-width: 900px) { .yacht-hero { grid-template-columns: 1fr; } }
+
+.yacht-info { display: flex; flex-direction: column; gap: var(--sp-15); }
+
+.yacht-name-price { display: flex; flex-direction: column; gap: var(--sp-6); }
+.hero-yacht-name { font-size: 26px; font-weight: 500; letter-spacing: -0.5px; color: var(--orange-gold); }
+.yacht-price { font-size: 22px; font-weight: 500; letter-spacing: -0.5px; color: var(--text-primary); }
+
+.yacht-specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-12) var(--sp-24);
+}
+.spec-item { display: flex; flex-direction: column; gap: 3px; }
+.spec-label {
+  font-size: var(--fs-10); font-weight: 500; color: var(--orange-gold);
+  text-transform: uppercase; letter-spacing: 1.98px;
+  display: flex; align-items: center; gap: 4px;
+}
+.spec-label i { font-size: 12px; }
+.spec-value { font-size: var(--fs-14); color: var(--text-primary); }
+
+/* PHOTO GRID */
+.photo-grid {
+  display: grid;
+  grid-template-columns: 1fr 140px;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 4px;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  height: 300px;
+}
+.photo-main {
+  grid-column: 1; grid-row: 1 / 4;
+  background: #d4cfc8;
+  position: relative; overflow: hidden;
+}
+.photo-main img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo-thumb {
+  background: #c8c3bb; position: relative; overflow: hidden;
+}
+.photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo-thumb.more {
+  background: var(--orange-10);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 500; color: #fff; cursor: pointer;
+}
+
+/* TABS */
+.tabs-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+}
+.tabs-nav {
+  display: flex;
+  border-bottom: 1px solid var(--border-soft);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs-nav::-webkit-scrollbar { display: none; }
+.tab-item {
+  padding: var(--sp-12) var(--sp-15);
+  font-size: var(--fs-14);
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color .12s, border-color .12s;
+  user-select: none;
+}
+.tab-item:hover { color: var(--text-primary); }
+.tab-item.active { color: var(--text-primary); font-weight: 500; border-bottom-color: var(--orange); }
+
+.tab-content { padding: var(--sp-24); }
+
+/* PUBLISHING MONITOR */
+.pm-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: var(--sp-15);
+}
+.pm-title { font-size: 18px; font-weight: 500; letter-spacing: -0.5px; }
+
+/* unsaved changes banner */
+.pm-banner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--sp-12);
+  background: var(--amber-bg);
+  border: 1px solid #fbbf24;
+  border-radius: var(--r-lg);
+  padding: var(--sp-9) var(--sp-15);
+  margin-bottom: var(--sp-15);
+  flex-wrap: wrap;
+}
+.pm-banner-text {
+  display: flex; align-items: center; gap: var(--sp-9);
+  font-size: var(--fs-11); color: var(--amber-text);
+}
+.pm-banner-text i { font-size: 14px; flex-shrink: 0; }
+.pm-banner-actions { display: flex; gap: var(--sp-6); }
+
+.btn-discard {
+  display: inline-flex; align-items: center; gap: var(--sp-4);
+  background: none; border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 6px var(--sp-12);
+  font-size: var(--fs-11); color: var(--text-secondary);
+  cursor: pointer; font-family: var(--font); transition: all .12s;
+}
+.btn-discard:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+.btn-apply {
+  display: inline-flex; align-items: center; gap: var(--sp-4);
+  background: var(--orange-10); border: none;
+  border-radius: var(--r-md); padding: 6px var(--sp-12);
+  font-size: var(--fs-11); color: #fff; font-weight: 500;
+  cursor: pointer; font-family: var(--font); transition: background .12s;
+}
+.btn-apply:hover { background: var(--orange); }
+
+/* TABLE */
+.pm-table-wrap { overflow-x: auto; }
+table {
+  width: 100%; border-collapse: collapse;
+  font-size: var(--fs-14);
+}
+thead tr { border-bottom: 1px solid var(--border-soft); }
+th {
+  padding: var(--sp-9) var(--sp-12);
+  text-align: left;
+  font-size: var(--fs-10); font-weight: 500; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 1.98px;
+  white-space: nowrap;
+}
+td {
+  padding: var(--sp-12);
+  border-bottom: 1px solid var(--border-soft);
+  vertical-align: middle;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg-base); }
+
+/* marketplace logo cell */
+.mp-name-cell { display: flex; align-items: center; gap: var(--sp-9); }
+.mp-logo {
+  width: 52px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.mp-logo-text {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: var(--text-secondary);
+}
+.mp-logo-yw { color: #1a5276; font-weight: 800; font-size: 10px; letter-spacing: -0.3px; }
+.mp-logo-yatco { color: #c0392b; font-weight: 800; font-size: 10px; }
+.mp-logo-nj { color: #2ecc71; font-weight: 800; font-size: 11px; letter-spacing: 1px; }
+.mp-logo-fraser { color: #8b6914; font-weight: 700; font-size: 9px; letter-spacing: 0.5px; }
+
+.mp-label { font-size: var(--fs-14); font-weight: 500; color: var(--text-primary); }
+.mp-access-note { font-size: var(--fs-11); color: var(--text-muted); font-style: italic; }
+
+/* toggle switch */
+.toggle-wrap { display: flex; align-items: center; gap: var(--sp-6); }
+.toggle {
+  position: relative; width: 36px; height: 20px;
+  background: var(--border); border-radius: var(--r-pill);
+  cursor: pointer; transition: background .15s; flex-shrink: 0;
+}
+.toggle.on { background: var(--orange-10); }
+.toggle.disabled { opacity: .4; cursor: not-allowed; }
+.toggle::after {
+  content: ''; position: absolute;
+  width: 14px; height: 14px;
+  border-radius: 50%; background: #fff;
+  top: 3px; left: 3px; transition: transform .15s;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.toggle.on::after { transform: translateX(16px); }
+.toggle-label { font-size: var(--fs-11); color: var(--text-secondary); }
+
+/* co-brokerage toggle (smaller) */
+.cobrok-wrap { display: flex; align-items: center; gap: var(--sp-6); }
+.toggle-sm {
+  position: relative; width: 28px; height: 16px;
+  background: var(--border); border-radius: var(--r-pill);
+  cursor: pointer; transition: background .15s; flex-shrink: 0;
+}
+.toggle-sm.on { background: var(--orange-10); }
+.toggle-sm.disabled { opacity: .4; cursor: not-allowed; }
+.toggle-sm::after {
+  content: ''; position: absolute;
+  width: 10px; height: 10px;
+  border-radius: 50%; background: #fff;
+  top: 3px; left: 3px; transition: transform .15s;
+}
+.toggle-sm.on::after { transform: translateX(12px); }
+.cobrok-label { font-size: var(--fs-11); color: var(--text-secondary); }
+
+/* request dropdown in pm table */
+.pm-req-select {
+  font-family: var(--font);
+  font-size: var(--fs-11);
+  color: var(--text-primary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-md);
+  padding: 5px 24px 5px var(--sp-9);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: border-color .15s;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%23c5c1b9' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 7px center;
+  min-width: 148px;
+}
+.pm-req-select:hover { border-color: var(--border); }
+.pm-req-select:focus { border-color: var(--text-secondary); }
+.pm-req-select:disabled { opacity: .45; cursor: not-allowed; background-color: var(--bg-soft); }
+.pm-req-select.has-value { border-color: var(--orange); color: var(--text-primary); font-weight: 500; }
+
+/* cobrok select */
+.pm-cobrok-select {
+  font-family: var(--font);
+  font-size: var(--fs-11);
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-md);
+  padding: 5px 24px 5px var(--sp-9);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: border-color .15s;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%23c5c1b9' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 7px center;
+  min-width: 110px;
+}
+.pm-cobrok-select:hover { border-color: var(--border); }
+.pm-cobrok-select:disabled { opacity: .45; cursor: not-allowed; background-color: var(--bg-soft); }
+
+/* status badges */
+.status-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: var(--fs-11); font-weight: 500;
+  padding: 3px var(--sp-9); border-radius: var(--r-pill);
+  white-space: nowrap;
+}
+.st-published     { color: var(--green); }
+.st-failed        { color: var(--red-strong); }
+.st-not-published { color: var(--text-muted); }
+.st-pending       { color: var(--amber-text); }
+.st-unpublished   { color: var(--text-secondary); }
+
+/* url cell */
+.url-cell {
+  display: flex; align-items: center; gap: var(--sp-4);
+  font-size: var(--fs-11); color: var(--blue); max-width: 160px;
+}
+.url-cell span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.url-cell i { font-size: 13px; flex-shrink: 0; }
+.url-empty { font-size: var(--fs-11); color: var(--text-muted); }
+
+/* action buttons */
+.act-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: var(--fs-11); font-weight: 500;
+  padding: 5px var(--sp-12); border-radius: var(--r-md);
+  cursor: pointer; font-family: var(--font); transition: all .12s;
+  border: 1px solid transparent; white-space: nowrap;
+}
+.act-publish   { background: var(--orange-10); color: #fff; border-color: var(--orange-10); }
+.act-publish:hover { background: var(--orange); border-color: var(--orange); }
+.act-unpublish { background: none; border-color: var(--border); color: var(--text-secondary); }
+.act-unpublish:hover { border-color: var(--red); color: var(--red); }
+.act-retry     { background: none; border-color: var(--red); color: var(--red); }
+.act-retry:hover { background: var(--red-bg); }
+.act-request   { background: none; border-color: var(--border); color: var(--text-secondary); }
+.act-request:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+/* last update */
+.last-update { font-size: var(--fs-11); color: var(--text-muted); white-space: nowrap; }
+
+/* tip */
+.pm-tip {
+  margin-top: var(--sp-12);
+  font-size: var(--fs-11); color: var(--text-muted);
+  display: flex; align-items: flex-start; gap: var(--sp-6);
+  line-height: 1.5;
+}
+.pm-tip i { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  :root { --sidebar-w: 48px; }
+  .nav-item span { display: none; }
+  .sidebar-logo { padding: var(--sp-15) var(--sp-9); font-size: 10px; }
+  .sidebar-user { padding: var(--sp-9); justify-content: center; }
+  .sidebar-user-name { display: none; }
+  .nav-item { padding: var(--sp-9); justify-content: center; }
+  .nav-item.active { border-left: none; padding: var(--sp-9); }
+}
+@media (max-width: 640px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+  .content { padding: var(--sp-15) var(--sp-12); }
+  .photo-grid { grid-template-columns: 1fr; height: 200px; }
+  .photo-thumb { display: none; }
+}
+
+
+/* ── SCREEN SWITCHING ── */
+.screen { display: none; }
+.screen.active { display: flex; flex-direction: column; flex: 1; min-height: 100vh; }
 </style>
-</head>
+
 <body>
+
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
@@ -709,17 +1180,17 @@ tr:hover td { background: var(--bg-base); }
     <i class="ti ti-chevron-down" style="font-size:14px;color:var(--text-secondary)" aria-hidden="true"></i>
   </div>
   <nav class="nav">
-    <a class="nav-item" href="#"><i class="ti ti-layout-dashboard" aria-hidden="true"></i><span>Dashboard</span></a>
-    <a class="nav-item" href="#"><i class="ti ti-sailboat" aria-hidden="true"></i><span>Yachts</span></a>
-    <a class="nav-item" href="#"><i class="ti ti-map-pin" aria-hidden="true"></i><span>Yacht Shows</span></a>
-    <a class="nav-item active" href="#"><i class="ti ti-world-upload" aria-hidden="true"></i><span>Publishing Hub</span></a>
-    <a class="nav-item" href="#"><i class="ti ti-list" aria-hidden="true"></i><span>Lists &amp; Shows</span></a>
-    <a class="nav-item" href="#"><i class="ti ti-bell" aria-hidden="true"></i><span>Yacht Updates</span></a>
-    <a class="nav-item" href="#"><i class="ti ti-sparkles" aria-hidden="true"></i><span>Yacht Matches</span></a>
-    <a class="nav-item" href="#"><i class="ti ti-chart-bar" aria-hidden="true"></i><span>Market Intelligence</span></a>
-    <a class="nav-item" href="#"><i class="ti ti-anchor" aria-hidden="true"></i><span>Shipyards</span></a>
-    <a class="nav-item" href="#"><i class="ti ti-mail" aria-hidden="true"></i><span>Emails</span></a>
-    <a class="nav-item" href="#"><i class="ti ti-file-certificate" aria-hidden="true"></i><span>Centrals &amp; Deals</span></a>
+    <div class="nav-item" data-nav="dashboard"   onclick="navigate('screen-hub',event)"><i class="ti ti-layout-dashboard" aria-hidden="true"></i><span>Dashboard</span></div>
+    <div class="nav-item" data-nav="yachts"       onclick="navigate('screen-yacht',event)"><i class="ti ti-sailboat" aria-hidden="true"></i><span>Yachts</span></div>
+    <div class="nav-item" data-nav="shows"       ><i class="ti ti-map-pin" aria-hidden="true"></i><span>Yacht Shows</span></div>
+    <div class="nav-item active" data-nav="publishing" onclick="navigate('screen-hub',event)"><i class="ti ti-world-upload" aria-hidden="true"></i><span>Publishing Hub</span></div>
+    <div class="nav-item" data-nav="lists"       ><i class="ti ti-list" aria-hidden="true"></i><span>Lists &amp; Shows</span></div>
+    <div class="nav-item" data-nav="updates"     ><i class="ti ti-bell" aria-hidden="true"></i><span>Yacht Updates</span></div>
+    <div class="nav-item" data-nav="matches"     ><i class="ti ti-sparkles" aria-hidden="true"></i><span>Yacht Matches</span></div>
+    <div class="nav-item" data-nav="market"      ><i class="ti ti-chart-bar" aria-hidden="true"></i><span>Market Intelligence</span></div>
+    <div class="nav-item" data-nav="shipyards"   ><i class="ti ti-anchor" aria-hidden="true"></i><span>Shipyards</span></div>
+    <div class="nav-item" data-nav="emails"      ><i class="ti ti-mail" aria-hidden="true"></i><span>Emails</span></div>
+    <div class="nav-item" data-nav="centrals"    ><i class="ti ti-file-certificate" aria-hidden="true"></i><span>Centrals &amp; Deals</span></div>
   </nav>
 </aside>
 
@@ -732,6 +1203,9 @@ tr:hover td { background: var(--bg-base); }
   <div class="bottom-bar-item"><i class="ti ti-dots" aria-hidden="true"></i>More</div>
 </div>
 
+
+<!-- SCREEN: PUBLISHING HUB -->
+<div class="screen active" id="screen-hub">
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
@@ -858,6 +1332,166 @@ tr:hover td { background: var(--bg-base); }
 <!-- DRAWER OVERLAY -->
 <div class="modal-overlay" id="modal" role="dialog" aria-modal="true">
   <div class="drawer" id="drawer"></div>
+</div>
+
+<!-- Global endpoint popover -->
+<div id="ep-popover-global" role="tooltip"></div>
+</div>
+
+<!-- SCREEN: YACHT DETAIL -->
+<div class="screen" id="screen-yacht">
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-search">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      <input type="text" placeholder="Search boats or clients">
+    </div>
+    <div class="topbar-user">
+      James Smith <i class="ti ti-chevron-down" style="font-size:13px;color:var(--text-muted)" aria-hidden="true"></i>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- Back + actions -->
+    <div class="page-actions">
+      <button class="back-btn" onclick="navigate('screen-hub',event)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
+      <div class="actions-right">
+        <button class="btn-outline"><i class="ti ti-edit" aria-hidden="true"></i> Edit</button>
+        <button class="btn-dark"><i class="ti ti-download" aria-hidden="true"></i> Spec Sheet</button>
+      </div>
+    </div>
+
+    <!-- Yacht hero card -->
+    <div class="yacht-hero">
+      <!-- Info -->
+      <div class="yacht-info">
+        <div class="yacht-name-price">
+          <span class="hero-yacht-name">Plvs Vltra</span>
+          <span class="yacht-price">$124,500</span>
+        </div>
+        <div class="yacht-specs">
+          <div class="spec-item">
+            <span class="spec-label"><i class="ti ti-calendar"></i>Built / Refit</span>
+            <span class="spec-value">2024 / 2027</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label"><i class="ti ti-ruler"></i>LOA</span>
+            <span class="spec-value">110 ft. / 33 m</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label"><i class="ti ti-building-factory"></i>Builder</span>
+            <span class="spec-value">Placeholder</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label"><i class="ti ti-weight"></i>Gross Tonnage</span>
+            <span class="spec-value">00</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label"><i class="ti ti-user"></i>Broker</span>
+            <span class="spec-value">Placeholder</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label"><i class="ti ti-building"></i>Brokerage</span>
+            <span class="spec-value">Placeholder</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label"><i class="ti ti-bed"></i>Staterooms</span>
+            <span class="spec-value">3</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label"><i class="ti ti-users"></i>Crew</span>
+            <span class="spec-value">2</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label"><i class="ti ti-armchair"></i>Guests</span>
+            <span class="spec-value">4</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label"><i class="ti ti-clock"></i>Time on Market</span>
+            <span class="spec-value">5 days</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Photo grid -->
+      <div class="photo-grid">
+        <div class="photo-main">
+          <img src="https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800&q=80" alt="Plvs Vltra main photo">
+        </div>
+        <div class="photo-thumb">
+          <img src="https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=300&q=80" alt="">
+        </div>
+        <div class="photo-thumb">
+          <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&q=80" alt="">
+        </div>
+        <div class="photo-thumb more">+29</div>
+      </div>
+    </div>
+
+    <!-- Tabs + content -->
+    <div class="tabs-bar">
+      <div class="tabs-nav">
+        <div class="tab-item" onclick="switchTab(this)">Overview</div>
+        <div class="tab-item" onclick="switchTab(this)">Dimensions</div>
+        <div class="tab-item" onclick="switchTab(this)">Mechanical</div>
+        <div class="tab-item" onclick="switchTab(this)">Equipment</div>
+        <div class="tab-item" onclick="switchTab(this)">Location</div>
+        <div class="tab-item" onclick="switchTab(this)">History</div>
+        <div class="tab-item" onclick="switchTab(this)">Charter</div>
+        <div class="tab-item" onclick="switchTab(this)">Special Offers</div>
+        <div class="tab-item" onclick="switchTab(this)">Notes</div>
+        <div class="tab-item active" onclick="switchTab(this)">Marketplace</div>
+      </div>
+
+      <!-- Marketplace tab content -->
+      <div class="tab-content" id="tab-marketplace">
+
+        <div class="pm-header">
+          <span class="pm-title">Publishing Monitor</span>
+        </div>
+
+        <!-- Unsaved changes banner -->
+        <div class="pm-banner" id="pm-banner">
+          <div class="pm-banner-text">
+            <i class="ti ti-info-circle" aria-hidden="true"></i>
+            1 unsaved change — settings will not sync to marketplaces until you apply them.
+          </div>
+          <div class="pm-banner-actions">
+            <button class="btn-discard" onclick="discardChanges()"><i class="ti ti-x" aria-hidden="true"></i>Discard</button>
+            <button class="btn-apply"><i class="ti ti-refresh" aria-hidden="true"></i>Apply Changes</button>
+          </div>
+        </div>
+
+        <!-- Marketplace table -->
+        <div class="pm-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:18%">Marketplace</th>
+                <th style="width:10%">Active</th>
+                <th style="width:16%">Co-brokerage</th>
+                <th style="width:13%">Status</th>
+                <th style="width:16%">URL</th>
+                <th style="width:18%">Request</th>
+                <th style="width:9%">Last update</th>
+              </tr>
+            </thead>
+            <tbody id="pm-tbody">
+              <!-- rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pm-tip">
+          <i class="ti ti-bulb" aria-hidden="true"></i>
+          <span>Tip: Toggling a marketplace off does not unpublish an existing listing. Use <strong>Unpublish</strong> to remove it from the public marketplace.</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <!-- Global endpoint popover -->
@@ -1061,7 +1695,7 @@ function renderTable() {
     ).join("");
 
     // Action buttons: contextual
-    let actionBtns = `<button class="manage-btn" onclick="openDrawer(${y.id})"><i class="ti ti-settings" aria-hidden="true"></i>Manage</button>`;
+    let actionBtns = `<button class="manage-btn" onclick="openDrawer(${y.id})"><i class="ti ti-settings" aria-hidden="true"></i>Manage</button><button class="manage-btn" style="margin-top:3px" onclick="navigate('screen-yacht',event)" title="Open yacht detail"><i class="ti ti-external-link" aria-hidden="true"></i></button>`;
     if (r.canApprove && hasPendingPub) {
       actionBtns = `<button class="approve-btn" onclick="openDrawer(${y.id})"><i class="ti ti-circle-check" aria-hidden="true"></i>Review &amp; Approve</button>` + actionBtns;
     }
@@ -1383,5 +2017,156 @@ function hideEpPopover() {
 renderTable();
 </script>
 
+<script>
+/* ── YACHT DETAIL JS ── */
+const MARKETPLACES = [
+  {
+    id: "yw",    name: "YachtWorld", logoClass: "mp-logo-yw",    logoText: "YachtWorld ●",
+    active: true,  cobrok: "yes",  status: "published",    request: "—",
+    url: "7892-12@myshopify.com", lastUpdate: "2hrs ago", hasAccess: true,
+  },
+  {
+    id: "yatco", name: "YatCo",     logoClass: "mp-logo-yatco",  logoText: "YATCO",
+    active: false, cobrok: "yes",  status: "published",    request: "—",
+    url: "7892-12@myshopify.com", lastUpdate: "2hrs ago", hasAccess: true,
+  },
+  {
+    id: "nj",    name: "N&J",       logoClass: "mp-logo-nj",     logoText: "N&J",
+    active: true,  cobrok: "no",   status: "error",        request: "—",
+    url: "", lastUpdate: "2hrs ago", hasAccess: true,
+  },
+  {
+    id: "fraser",name: "Fraser",    logoClass: "mp-logo-fraser",  logoText: "FRASER",
+    active: false, cobrok: "not-available", status: "not-published", request: "—",
+    url: "", lastUpdate: "", hasAccess: false,
+  },
+];
+
+let pendingChanges = 1;
+
+function statusBadge(mp) {
+  const cfg = {
+    "published":     { cls:"st-published",    icon:"ti-circle-check",  label:"Published" },
+    "error":         { cls:"st-failed",        icon:"ti-alert-circle",  label:"Published Failed" },
+    "not-published": { cls:"st-not-published", icon:"ti-circle-dashed", label:"Not published" },
+    "pending":       { cls:"st-pending",       icon:"ti-clock",         label:"Pending" },
+    "unpublished":   { cls:"st-unpublished",   icon:"ti-circle-x",      label:"Unpublished" },
+  };
+  const c = cfg[mp.status] || cfg["not-published"];
+  return `<span class="status-badge ${c.cls}"><i class="ti ${c.icon}" aria-hidden="true"></i>${c.label}</span>`;
+}
+
+function requestSelect(mp) {
+  if (!mp.hasAccess) return `<span style="font-size:var(--fs-11);color:var(--text-muted)">No access</span>`;
+  const hasVal = mp.request !== "—";
+  return `<select class="pm-req-select ${hasVal ? 'has-value' : ''}" onchange="setRequest('${mp.id}', this.value)">
+    <option value="—"                    ${mp.request==="—"                    ? "selected" : ""}>—</option>
+    <option value="No request"           ${mp.request==="No request"           ? "selected" : ""}>No request</option>
+    <option value="Publish requested"    ${mp.request==="Publish requested"    ? "selected" : ""}>Publish requested</option>
+    <option value="Unpublish requested"  ${mp.request==="Unpublish requested"  ? "selected" : ""}>Unpublish requested</option>
+  </select>`;
+}
+
+function cobrokSelect(mp) {
+  if (!mp.hasAccess) return `<span style="font-size:var(--fs-11);color:var(--text-muted)">No access</span>`;
+  return `<select class="pm-cobrok-select" onchange="setCobrok('${mp.id}', this.value)">
+    <option value="yes"           ${mp.cobrok==="yes"           ? "selected" : ""}>Yes</option>
+    <option value="no"            ${mp.cobrok==="no"            ? "selected" : ""}>No</option>
+    <option value="not-available" ${mp.cobrok==="not-available" ? "selected" : ""}>Not available</option>
+  </select>`;
+}
+
+function renderTable() {
+  document.getElementById("pm-tbody").innerHTML = MARKETPLACES.map(mp => {
+    const rowMuted = !mp.hasAccess ? "opacity:.55" : "";
+    const urlCell = mp.url
+      ? `<div class="url-cell"><i class="ti ti-external-link" aria-hidden="true"></i><span>${mp.url}</span></div>`
+      : `<span class="url-empty">—</span>`;
+
+    return `<tr style="${rowMuted}">
+      <td>
+        <div class="mp-name-cell">
+          <div class="mp-logo"><span class="${mp.logoClass} mp-logo-text">${mp.logoText}</span></div>
+          <span class="mp-label">${mp.name}</span>
+        </div>
+      </td>
+      <td>
+        ${mp.hasAccess
+          ? `<div class="toggle-wrap">
+              <div class="toggle ${mp.active ? 'on' : ''}" onclick="toggleActive('${mp.id}')"></div>
+              <span class="toggle-label">${mp.active ? 'On' : 'Off'}</span>
+            </div>`
+          : `<span style="font-size:var(--fs-11);color:var(--text-muted)">No access</span>`
+        }
+      </td>
+      <td>${cobrokSelect(mp)}</td>
+      <td>${statusBadge(mp)}</td>
+      <td>${urlCell}</td>
+      <td>${requestSelect(mp)}</td>
+      <td><span class="last-update">${mp.lastUpdate || '—'}</span></td>
+    </tr>`;
+  }).join("");
+}
+
+function toggleActive(id) {
+  const mp = MARKETPLACES.find(m => m.id === id);
+  if (!mp || !mp.hasAccess) return;
+  mp.active = !mp.active;
+  pendingChanges++;
+  updateBanner();
+  renderTable();
+}
+
+function setRequest(id, val) {
+  const mp = MARKETPLACES.find(m => m.id === id);
+  if (!mp) return;
+  mp.request = val;
+  pendingChanges++;
+  updateBanner();
+  renderTable();
+}
+
+function setCobrok(id, val) {
+  const mp = MARKETPLACES.find(m => m.id === id);
+  if (!mp) return;
+  mp.cobrok = val;
+  pendingChanges++;
+  updateBanner();
+  renderTable();
+}
+
+function updateBanner() {
+  document.getElementById("pm-banner").style.display = pendingChanges > 0 ? "flex" : "none";
+  document.querySelector(".pm-banner-text").innerHTML =
+    `<i class="ti ti-info-circle" aria-hidden="true"></i>
+     ${pendingChanges} unsaved change${pendingChanges > 1 ? 's' : ''} — settings will not sync to marketplaces until you apply them.`;
+}
+
+function discardChanges() {
+  pendingChanges = 0;
+  updateBanner();
+}
+
+function switchTab(el) {
+  document.querySelectorAll(".tab-item").forEach(t => t.classList.remove("active"));
+  el.classList.add("active");
+}
+
+// ── NAVIGATION ──
+function navigate(screenId, event) {
+  if (event) event.preventDefault();
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (screenId === 'screen-hub') {
+    document.querySelector('[data-nav="publishing"]').classList.add('active');
+  } else if (screenId === 'screen-yacht') {
+    document.querySelector('[data-nav="yachts"]').classList.add('active');
+  }
+  window.scrollTo(0, 0);
+}
+
+renderTable();
+</script>
 </body>
 </html>
