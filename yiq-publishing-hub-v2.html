@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Publishing Hub — YachtIQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css">
+<style>
+:root {
+  --bg-base: #fcfbf8;
+  --bg-soft: #f5f1ec;
+  --bg-card: #ffffff;
+  --text-primary: #1b1b1b;
+  --text-secondary: #6a615b;
+  --text-muted: #c5c1b9;
+  --orange: #fe7b02;
+  --orange-gold: #c39553;
+  --orange-dark: #392a1e;
+  --orange-10: #221811;
+  --orange-86: #e2ddd7;
+  --orange-89: #e9e4de;
+  --border: #c5c1b9;
+  --border-soft: #e9e4de;
+  --green: #2b9667;
+  --green-bg: #2b966726;
+  --red: #d73337;
+  --red-bg: #d7333766;
+  --red-strong: #fe3f21;
+  --blue: #575ecf;
+  --blue-bg: #575ecf1a;
+  --amber-text: #906847;
+  --amber-bg: #fef3e2;
+  --purple: #6b3fa0;
+  --purple-bg: #6b3fa01a;
+  --font: 'DM Sans', sans-serif;
+  --fs-10: 10px; --fs-11: 11px; --fs-14: 14px;
+  --sp-4: 4px; --sp-6: 6px; --sp-7: 7px; --sp-8: 8px;
+  --sp-9: 9px; --sp-12: 12px; --sp-15: 15px; --sp-24: 24px; --sp-40: 40px;
+  --r-sm: 4px; --r-md: 6px; --r-lg: 8px; --r-xl: 12px; --r-pill: 999px;
+  --sidebar-w: 220px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  font-size: var(--fs-14);
+  color: var(--text-primary);
+  background: var(--bg-soft);
+  min-height: 100vh;
+  display: flex;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: var(--bg-card);
+  border-right: 1px solid var(--orange-89);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 100;
+  overflow-y: auto;
+}
+.sidebar-logo {
+  padding: var(--sp-24) var(--sp-15) var(--sp-15);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.98px;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border-soft);
+  margin-bottom: var(--sp-9);
+  flex-shrink: 0;
+}
+.sidebar-logo span { color: var(--orange-gold); font-weight: 300; }
+.sidebar-user {
+  padding: var(--sp-9) var(--sp-15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-soft);
+  margin-bottom: var(--sp-9);
+}
+.sidebar-user-name { font-size: var(--fs-14); font-weight: 500; }
+.nav { flex: 1; padding: var(--sp-4) 0; overflow-y: auto; }
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-9);
+  padding: var(--sp-9) var(--sp-15);
+  font-size: var(--fs-14);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background .1s, color .1s;
+  user-select: none;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.nav-item i { font-size: 17px; flex-shrink: 0; }
+.nav-item:hover { background: var(--bg-soft); color: var(--text-primary); }
+.nav-item.active {
+  background: var(--bg-soft);
+  color: var(--text-primary);
+  font-weight: 500;
+  border-left: 2px solid var(--orange);
+  padding-left: calc(var(--sp-15) - 2px);
+}
+.nav-item.active i { color: var(--orange); }
+
+/* MAIN */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TOPBAR */
+.topbar {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-soft);
+  padding: 0 var(--sp-24);
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+.topbar-search { position: relative; display: flex; align-items: center; }
+.topbar-search i { position: absolute; left: 9px; font-size: 16px; color: var(--text-muted); pointer-events: none; }
+.topbar-search input {
+  font-family: var(--font);
+  font-size: var(--fs-14);
+  color: var(--text-primary);
+  background: var(--bg-soft);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-xl);
+  padding: var(--sp-7) var(--sp-12) var(--sp-7) 32px;
+  width: 240px;
+  outline: none;
+  transition: border-color .15s;
+}
+.topbar-search input:focus { border-color: var(--text-secondary); background: var(--bg-card); }
+.topbar-search input::placeholder { color: var(--text-muted); }
+
+/* CONTENT */
+.content { padding: var(--sp-24); flex: 1; }
+
+/* PAGE HEADER */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12);
+  margin-bottom: var(--sp-24);
+  flex-wrap: wrap;
+}
+.page-title { font-size: 22px; font-weight: 500; letter-spacing: -0.5px; line-height: 28px; }
+.viewing-as-label { font-size: var(--fs-11); color: var(--text-secondary); letter-spacing: 0.5px; text-transform: uppercase; }
+
+select, input[type="text"] {
+  font-family: var(--font);
+  font-size: var(--fs-14);
+  color: var(--text-primary);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp-7) var(--sp-12);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color .15s;
+}
+input[type="text"]:focus, select:focus { border-color: var(--text-secondary); }
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236a615b' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 9px center;
+  padding-right: 28px;
+  cursor: pointer;
+}
+select:disabled { opacity: .45; cursor: not-allowed; background-color: var(--bg-soft); }
+
+/* FILTERS */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-6);
+  margin-bottom: var(--sp-24);
+  flex-wrap: wrap;
+}
+
+/* custom dropdown trigger */
+.fdd {
+  position: relative;
+  display: inline-block;
+  user-select: none;
+}
+.fdd-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-6);
+  font-family: var(--font);
+  font-size: var(--fs-14);
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-lg);
+  padding: var(--sp-7) var(--sp-9) var(--sp-7) var(--sp-12);
+  cursor: pointer;
+  transition: border-color .15s, color .15s;
+  white-space: nowrap;
+  min-width: 0;
+}
+.fdd-trigger:hover { border-color: var(--border); color: var(--text-primary); }
+.fdd-trigger .fdd-label { max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
+.fdd-trigger .fdd-chevron { font-size: 12px; color: var(--text-muted); transition: transform .15s; flex-shrink: 0; }
+.fdd.open .fdd-trigger { border-color: var(--text-secondary); color: var(--text-primary); }
+.fdd.open .fdd-chevron { transform: rotate(180deg); }
+.fdd.active .fdd-trigger { border-color: var(--orange); color: var(--text-primary); font-weight: 500; }
+.fdd.active .fdd-chevron { color: var(--orange); }
+
+/* count badge inside trigger */
+.fdd-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 5px;
+  border-radius: var(--r-pill);
+  background: var(--orange);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* dropdown panel */
+.fdd-panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  z-index: 500;
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-lg);
+  box-shadow: 0 4px 20px rgba(27,27,27,.1);
+  min-width: 180px;
+  padding: var(--sp-6) 0;
+  max-height: 280px;
+  overflow-y: auto;
+}
+.fdd.open .fdd-panel { display: block; }
+
+/* option row */
+.fdd-option {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-9);
+  padding: var(--sp-7) var(--sp-12);
+  font-size: var(--fs-14);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background .1s;
+  white-space: nowrap;
+}
+.fdd-option:hover { background: var(--bg-soft); color: var(--text-primary); }
+.fdd-option.checked { color: var(--text-primary); }
+
+/* custom checkbox */
+.fdd-cb {
+  width: 15px;
+  height: 15px;
+  border-radius: 3px;
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all .1s;
+  background: transparent;
+}
+.fdd-option.checked .fdd-cb {
+  background: var(--orange-10);
+  border-color: var(--orange-10);
+}
+.fdd-option.checked .fdd-cb::after {
+  content: '';
+  width: 8px;
+  height: 5px;
+  border-left: 1.5px solid #fff;
+  border-bottom: 1.5px solid #fff;
+  transform: rotate(-45deg) translateY(-1px);
+  display: block;
+}
+
+/* divider inside panel */
+.fdd-divider {
+  height: 1px;
+  background: var(--border-soft);
+  margin: var(--sp-4) 0;
+}
+
+/* clear filters btn */
+.filter-clear {
+  font-size: var(--fs-11);
+  color: var(--text-muted);
+  background: none;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-lg);
+  cursor: pointer;
+  padding: var(--sp-7) var(--sp-9);
+  font-family: var(--font);
+  display: none;
+  align-items: center;
+  gap: 4px;
+  transition: all .12s;
+}
+.filter-clear:hover { color: var(--text-primary); border-color: var(--border); background: var(--bg-soft); }
+.filter-clear.visible { display: inline-flex; }
+
+/* STATS */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--sp-9);
+  margin-bottom: var(--sp-24);
+}
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-xl);
+  padding: var(--sp-15);
+}
+.stat-val { font-size: 28px; font-weight: 500; letter-spacing: -0.6px; line-height: 32px; }
+.stat-val.red { color: var(--red); }
+.stat-val.amber { color: var(--amber-text); }
+.stat-label { font-size: var(--fs-11); color: var(--text-secondary); margin-top: 2px; letter-spacing: 0.5px; }
+
+/* TABLE */
+.table-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+}
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: var(--fs-14); min-width: 760px; }
+col.c-yacht   { width: 17%; }
+col.c-broker  { width: 18%; }
+col.c-builder { width: 9%; }
+col.c-eps     { width: 33%; }
+col.c-updated { width: 13%; }
+col.c-action  { width: 10%; }
+
+thead tr { background: var(--bg-soft); border-bottom: 1px solid var(--border-soft); }
+th {
+  padding: var(--sp-9) var(--sp-12);
+  text-align: left;
+  font-size: var(--fs-10);
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  letter-spacing: 1.98px;
+  text-transform: uppercase;
+  cursor: pointer;
+  user-select: none;
+}
+th:hover { color: var(--text-primary); }
+th.sorted { color: var(--text-primary); }
+th .sort-icon { margin-left: 3px; opacity: .35; font-size: 10px; }
+th.sorted .sort-icon { opacity: 1; color: var(--orange); }
+
+td { padding: var(--sp-12); border-bottom: 1px solid var(--border-soft); vertical-align: middle; color: var(--text-primary); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg-base); }
+
+.yacht-name { font-weight: 500; }
+.yacht-meta { font-size: var(--fs-11); color: var(--text-secondary); margin-top: 2px; }
+
+.brand-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px var(--sp-6);
+  border-radius: var(--r-pill);
+  margin-top: 3px;
+  letter-spacing: 0.5px;
+}
+.brand-fraser { background: #e8e3fe; color: #3b2d8c; }
+.brand-nj     { background: var(--green-bg); color: var(--green); }
+
+/* ENDPOINT BADGES */
+.ep-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  flex-wrap: nowrap;
+  overflow: hidden;
+  position: relative;
+}
+.ep-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: var(--fs-10);
+  font-weight: 500;
+  padding: 3px var(--sp-7);
+  border-radius: var(--r-pill);
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+  border: 1px solid transparent;
+  flex-shrink: 0;
+}
+.ep-badge i { font-size: 10px; }
+.ep-published        { background: var(--green-bg);   color: var(--green); }
+.ep-pending-pub      { background: var(--amber-bg);   color: var(--amber-text); }
+.ep-pending-unpub    { background: var(--purple-bg);  color: var(--purple); }
+.ep-needs-review     { background: #fff3e0;            color: #b45309; border-color: #fbbf24; }
+.ep-unpublished      { background: var(--red-bg);     color: var(--red); }
+.ep-error            { background: var(--red-bg);     color: var(--red-strong); border-color: var(--red); }
+.ep-none             { background: var(--bg-soft);    color: var(--text-secondary); border-color: var(--border); }
+
+/* overflow +N badge */
+.ep-overflow {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--fs-10);
+  font-weight: 500;
+  padding: 3px var(--sp-7);
+  border-radius: var(--r-pill);
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: default;
+}
+
+/* popover */
+.ep-popover-wrap {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+.ep-popover {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 200;
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-lg);
+  box-shadow: 0 4px 20px rgba(27,27,27,.1);
+  padding: var(--sp-9);
+  min-width: 180px;
+  display: none;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+.ep-popover-wrap:hover .ep-popover,
+.ep-popover-wrap:focus-within .ep-popover { display: flex; }
+.ep-popover-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-9);
+  font-size: var(--fs-11);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.ep-popover-name { flex: 1; min-width: 0; }
+
+/* row-level error detail pill */
+.ep-error-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--fs-10);
+  color: var(--red-strong);
+  background: var(--red-bg);
+  border: 1px solid var(--red);
+  border-radius: var(--r-pill);
+  padding: 2px 7px;
+  margin-top: 3px;
+  white-space: nowrap;
+}
+.ep-error-detail i { font-size: 10px; }
+
+.updated-by { font-size: var(--fs-14); color: var(--text-secondary); }
+.updated-at { font-size: var(--fs-11); color: var(--text-muted); margin-top: 1px; }
+
+/* ACTION BUTTONS */
+.action-cell { display: flex; flex-direction: column; gap: var(--sp-4); align-items: flex-start; }
+.manage-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 5px var(--sp-9);
+  font-size: var(--fs-11);
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-4);
+  transition: all .12s;
+  font-family: var(--font);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.manage-btn:hover { background: var(--orange); color: #fff; border-color: var(--orange); }
+
+.apply-btn {
+  background: var(--orange);
+  border: none;
+  border-radius: var(--r-md);
+  padding: 5px var(--sp-9);
+  font-size: var(--fs-11);
+  color: #fff;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-4);
+  transition: opacity .12s;
+  font-family: var(--font);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.apply-btn:hover { opacity: .85; }
+
+.approve-btn {
+  background: var(--green);
+  border: none;
+  border-radius: var(--r-md);
+  padding: 5px var(--sp-9);
+  font-size: var(--fs-11);
+  color: #fff;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-4);
+  transition: opacity .12s;
+  font-family: var(--font);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.approve-btn:hover { opacity: .85; }
+
+.empty-row td { text-align: center; padding: 2.5rem; color: var(--text-secondary); }
+
+/* MODAL OVERLAY */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(27,27,27,.35);
+  z-index: 300;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+.modal-overlay.open { display: flex; }
+
+/* DRAWER */
+.drawer {
+  background: var(--bg-card);
+  border-left: 1px solid var(--border-soft);
+  width: 500px;
+  max-width: 100%;
+  height: 100vh;
+  overflow-y: auto;
+  padding: var(--sp-24);
+  box-shadow: -4px 0 24px rgba(27,27,27,.08);
+}
+.drawer-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--sp-15); }
+.drawer-title { font-size: 18px; font-weight: 500; letter-spacing: -0.5px; }
+.drawer-sub { font-size: var(--fs-11); color: var(--text-secondary); margin-top: 3px; display: flex; align-items: center; gap: var(--sp-6); flex-wrap: wrap; }
+.close-btn { background: none; border: 1px solid var(--border); border-radius: var(--r-md); font-size: 15px; color: var(--text-secondary); cursor: pointer; padding: var(--sp-6); display: flex; align-items: center; justify-content: center; transition: all .12s; flex-shrink: 0; }
+.close-btn:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+.role-note { display: flex; align-items: flex-start; gap: var(--sp-9); background: var(--bg-soft); border: 1px solid var(--border-soft); border-radius: var(--r-lg); padding: var(--sp-9) var(--sp-12); margin-bottom: var(--sp-15); }
+.role-note i { font-size: 14px; color: var(--text-secondary); margin-top: 1px; flex-shrink: 0; }
+.role-note span { font-size: var(--fs-11); color: var(--text-secondary); line-height: 1.5; }
+
+.section-label { font-size: var(--fs-10); font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1.98px; margin: var(--sp-15) 0 var(--sp-9); }
+
+/* ENDPOINT ROW IN DRAWER */
+.ep-row { border: 1px solid var(--border-soft); border-radius: var(--r-lg); padding: var(--sp-15); margin-bottom: var(--sp-9); }
+.ep-row.has-error { border-color: var(--red); }
+.ep-row.needs-review { border-color: #fbbf24; }
+
+.ep-row-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sp-12); }
+.ep-row-name { font-size: var(--fs-14); font-weight: 500; }
+
+.error-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-6);
+  background: var(--red-bg);
+  border: 1px solid var(--red);
+  border-radius: var(--r-md);
+  padding: var(--sp-9) var(--sp-12);
+  margin-bottom: var(--sp-12);
+}
+.error-banner i { font-size: 14px; color: var(--red-strong); margin-top: 1px; flex-shrink: 0; }
+.error-banner-text { font-size: var(--fs-11); color: var(--red); line-height: 1.5; }
+.error-banner-label { font-weight: 700; color: var(--red-strong); display: block; margin-bottom: 2px; }
+
+.review-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-6);
+  background: #fff8ec;
+  border: 1px solid #fbbf24;
+  border-radius: var(--r-md);
+  padding: var(--sp-9) var(--sp-12);
+  margin-bottom: var(--sp-12);
+}
+.review-banner i { font-size: 14px; color: #b45309; margin-top: 1px; flex-shrink: 0; }
+.review-banner span { font-size: var(--fs-11); color: #92400e; line-height: 1.5; }
+
+.ep-fields { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-9); }
+.field-group label { font-size: var(--fs-11); color: var(--text-secondary); display: block; margin-bottom: 3px; letter-spacing: 0.5px; }
+.field-group select { width: 100%; font-size: var(--fs-11); padding: 5px var(--sp-9); }
+.field-read { font-size: var(--fs-14); color: var(--text-primary); padding: 4px 0; }
+.field-read.dim { color: var(--text-secondary); font-size: var(--fs-11); }
+.field-locked-note { display: flex; align-items: center; gap: 4px; font-size: var(--fs-10); color: var(--text-muted); margin-top: 4px; }
+.field-locked-note i { font-size: 11px; }
+
+.ep-row-meta { display: flex; gap: var(--sp-15); margin-top: var(--sp-9); padding-top: var(--sp-9); border-top: 1px solid var(--border-soft); }
+.ep-meta-item { display: flex; flex-direction: column; gap: 2px; }
+.ep-meta-label { font-size: var(--fs-10); color: var(--text-muted); letter-spacing: 0.5px; }
+.ep-meta-value { font-size: var(--fs-11); color: var(--text-secondary); }
+
+.listing-link { display: flex; align-items: center; gap: var(--sp-4); margin-top: var(--sp-9); font-size: var(--fs-11); color: var(--text-secondary); }
+.listing-link a { color: var(--blue); }
+
+.conditional-note { margin-top: var(--sp-9); padding-top: var(--sp-9); border-top: 1px solid var(--border-soft); font-size: var(--fs-10); color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+.conditional-note i { font-size: 11px; }
+.conditional-fields { margin-top: var(--sp-9); padding-top: var(--sp-9); border-top: 1px solid var(--border-soft); display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-9); }
+.conditional-label { font-size: var(--fs-11); color: var(--text-secondary); display: flex; align-items: center; gap: 4px; margin-bottom: 3px; }
+.conditional-label i { font-size: 11px; color: var(--amber-text); }
+
+/* DRAWER ACTION ROW */
+.ep-action-row { display: flex; justify-content: flex-end; gap: var(--sp-6); margin-top: var(--sp-9); padding-top: var(--sp-9); border-top: 1px solid var(--border-soft); }
+.ep-apply-btn { background: var(--orange); border: none; border-radius: var(--r-md); padding: 5px var(--sp-12); font-size: var(--fs-11); color: #fff; font-weight: 500; display: inline-flex; align-items: center; gap: var(--sp-4); cursor: pointer; font-family: var(--font); transition: opacity .12s; }
+.ep-apply-btn:hover { opacity: .85; }
+.ep-approve-btn { background: var(--green); border: none; border-radius: var(--r-md); padding: 5px var(--sp-12); font-size: var(--fs-11); color: #fff; font-weight: 500; display: inline-flex; align-items: center; gap: var(--sp-4); cursor: pointer; font-family: var(--font); transition: opacity .12s; }
+.ep-approve-btn:hover { opacity: .85; }
+.ep-reject-btn { background: none; border: 1px solid var(--border); border-radius: var(--r-md); padding: 5px var(--sp-12); font-size: var(--fs-11); color: var(--text-secondary); display: inline-flex; align-items: center; gap: var(--sp-4); cursor: pointer; font-family: var(--font); transition: all .12s; }
+.ep-reject-btn:hover { border-color: var(--red); color: var(--red); }
+
+.drawer-footer { display: flex; justify-content: flex-end; gap: var(--sp-9); margin-top: var(--sp-24); padding-top: var(--sp-15); border-top: 1px solid var(--border-soft); }
+.btn-primary { background: var(--orange-10); color: #fff; border: none; border-radius: var(--r-md); padding: var(--sp-9) var(--sp-24); font-size: var(--fs-14); font-weight: 500; cursor: pointer; transition: background .12s; font-family: var(--font); }
+.btn-primary:hover { background: var(--orange); }
+.btn-cancel { background: none; border: 1px solid var(--border); border-radius: var(--r-md); padding: var(--sp-9) var(--sp-24); font-size: var(--fs-14); color: var(--text-secondary); cursor: pointer; transition: background .12s; font-family: var(--font); }
+.btn-cancel:hover { background: var(--bg-soft); }
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  :root { --sidebar-w: 48px; }
+  .nav-item span { display: none; }
+  .sidebar-logo { font-size: 10px; letter-spacing: 1px; padding: var(--sp-15) var(--sp-9); }
+  .sidebar-user { padding: var(--sp-9); justify-content: center; }
+  .sidebar-user-name { display: none; }
+  .nav-item { padding: var(--sp-9); justify-content: center; }
+  .nav-item.active { border-left: none; padding: var(--sp-9); }
+  .stats-row { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 640px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; padding-bottom: 56px; }
+  .bottom-bar { display: flex; position: fixed; bottom: 0; left: 0; right: 0; height: 56px; background: var(--bg-card); border-top: 1px solid var(--border-soft); z-index: 100; align-items: center; justify-content: space-around; }
+  .bottom-bar-item { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; color: var(--text-secondary); cursor: pointer; padding: var(--sp-4) var(--sp-9); }
+  .bottom-bar-item i { font-size: 20px; }
+  .bottom-bar-item.active { color: var(--orange); }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .drawer { width: 100%; height: 92vh; position: fixed; bottom: 0; }
+  .modal-overlay { align-items: flex-end; }
+  .content { padding: var(--sp-15) var(--sp-12); }
+}
+@media (min-width: 641px) { .bottom-bar { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">YACHT<span>IQ</span></div>
+  <div class="sidebar-user">
+    <span class="sidebar-user-name">James Smith</span>
+    <i class="ti ti-chevron-down" style="font-size:14px;color:var(--text-secondary)" aria-hidden="true"></i>
+  </div>
+  <nav class="nav">
+    <a class="nav-item" href="#"><i class="ti ti-layout-dashboard" aria-hidden="true"></i><span>Dashboard</span></a>
+    <a class="nav-item" href="#"><i class="ti ti-sailboat" aria-hidden="true"></i><span>Yachts</span></a>
+    <a class="nav-item" href="#"><i class="ti ti-map-pin" aria-hidden="true"></i><span>Yacht Shows</span></a>
+    <a class="nav-item active" href="#"><i class="ti ti-world-upload" aria-hidden="true"></i><span>Publishing Hub</span></a>
+    <a class="nav-item" href="#"><i class="ti ti-list" aria-hidden="true"></i><span>Lists &amp; Shows</span></a>
+    <a class="nav-item" href="#"><i class="ti ti-bell" aria-hidden="true"></i><span>Yacht Updates</span></a>
+    <a class="nav-item" href="#"><i class="ti ti-sparkles" aria-hidden="true"></i><span>Yacht Matches</span></a>
+    <a class="nav-item" href="#"><i class="ti ti-chart-bar" aria-hidden="true"></i><span>Market Intelligence</span></a>
+    <a class="nav-item" href="#"><i class="ti ti-anchor" aria-hidden="true"></i><span>Shipyards</span></a>
+    <a class="nav-item" href="#"><i class="ti ti-mail" aria-hidden="true"></i><span>Emails</span></a>
+    <a class="nav-item" href="#"><i class="ti ti-file-certificate" aria-hidden="true"></i><span>Centrals &amp; Deals</span></a>
+  </nav>
+</aside>
+
+<!-- MOBILE BOTTOM BAR -->
+<div class="bottom-bar">
+  <div class="bottom-bar-item"><i class="ti ti-layout-dashboard" aria-hidden="true"></i>Home</div>
+  <div class="bottom-bar-item"><i class="ti ti-sailboat" aria-hidden="true"></i>Yachts</div>
+  <div class="bottom-bar-item active"><i class="ti ti-world-upload" aria-hidden="true"></i>Publishing</div>
+  <div class="bottom-bar-item"><i class="ti ti-list" aria-hidden="true"></i>Lists</div>
+  <div class="bottom-bar-item"><i class="ti ti-dots" aria-hidden="true"></i>More</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-search">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      <input type="text" id="search" placeholder="Search yacht, broker, builder...">
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Page title banner -->
+    <div style="background:var(--bg-card);border:1px solid var(--border-soft);border-radius:var(--r-xl);padding:var(--sp-24);margin-bottom:var(--sp-24);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--sp-12);">
+      <span class="page-title">Publishing Hub</span>
+      <div style="display:flex;align-items:center;gap:var(--sp-6)">
+        <span class="viewing-as-label">Viewing as</span>
+        <select id="role-sel">
+          <option value="admin">Admin</option>
+          <option value="marketing">Marketing user</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-bar" id="filter-bar">
+      <!-- Brand -->
+      <div class="fdd" id="fdd-brand">
+        <div class="fdd-trigger" onclick="toggleFdd('fdd-brand')">
+          <span class="fdd-label" id="lbl-brand">Brand</span>
+          <i class="ti ti-chevron-down fdd-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="fdd-panel">
+          <div class="fdd-option fdd-all checked" data-v="all" onclick="selectAll('brand',this)"><span class="fdd-cb"></span>All</div>
+          <div class="fdd-divider"></div>
+          <div class="fdd-option" data-v="fraser" onclick="toggleOpt('brand','fraser',this)"><span class="fdd-cb"></span>Fraser</div>
+          <div class="fdd-option" data-v="nj"     onclick="toggleOpt('brand','nj',this)"><span class="fdd-cb"></span>N&amp;J</div>
+        </div>
+      </div>
+      <!-- Type -->
+      <div class="fdd" id="fdd-type">
+        <div class="fdd-trigger" onclick="toggleFdd('fdd-type')">
+          <span class="fdd-label" id="lbl-type">Type</span>
+          <i class="ti ti-chevron-down fdd-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="fdd-panel">
+          <div class="fdd-option fdd-all checked" data-v="all" onclick="selectAll('type',this)"><span class="fdd-cb"></span>All</div>
+          <div class="fdd-divider"></div>
+          <div class="fdd-option" data-v="sales"   onclick="toggleOpt('type','sales',this)"><span class="fdd-cb"></span>Sales</div>
+          <div class="fdd-option" data-v="charter" onclick="toggleOpt('type','charter',this)"><span class="fdd-cb"></span>Charter</div>
+        </div>
+      </div>
+      <!-- Marketplace -->
+      <div class="fdd" id="fdd-marketplace">
+        <div class="fdd-trigger" onclick="toggleFdd('fdd-marketplace')">
+          <span class="fdd-label" id="lbl-marketplace">Marketplace</span>
+          <i class="ti ti-chevron-down fdd-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="fdd-panel">
+          <div class="fdd-option fdd-all checked" data-v="all" onclick="selectAll('marketplace',this)"><span class="fdd-cb"></span>All</div>
+          <div class="fdd-divider"></div>
+          <div class="fdd-option" data-v="fr-web"    onclick="toggleOpt('marketplace','fr-web',this)"><span class="fdd-cb"></span>FR web</div>
+          <div class="fdd-option" data-v="nj-web"    onclick="toggleOpt('marketplace','nj-web',this)"><span class="fdd-cb"></span>NJ web</div>
+          <div class="fdd-divider"></div>
+          <div class="fdd-option" data-v="yw-fr"     onclick="toggleOpt('marketplace','yw-fr',this)"><span class="fdd-cb"></span>Yachtworld FR</div>
+          <div class="fdd-option" data-v="yw-nj"     onclick="toggleOpt('marketplace','yw-nj',this)"><span class="fdd-cb"></span>Yachtworld NJ</div>
+          <div class="fdd-divider"></div>
+          <div class="fdd-option" data-v="yatco-fr"  onclick="toggleOpt('marketplace','yatco-fr',this)"><span class="fdd-cb"></span>Yatco FR</div>
+          <div class="fdd-option" data-v="yatco-nj"  onclick="toggleOpt('marketplace','yatco-nj',this)"><span class="fdd-cb"></span>Yatco NJ</div>
+        </div>
+      </div>
+      <!-- Status -->
+      <div class="fdd" id="fdd-status">
+        <div class="fdd-trigger" onclick="toggleFdd('fdd-status')">
+          <span class="fdd-label" id="lbl-status">Status</span>
+          <i class="ti ti-chevron-down fdd-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="fdd-panel">
+          <div class="fdd-option fdd-all checked" data-v="all" onclick="selectAll('status',this)"><span class="fdd-cb"></span>All</div>
+          <div class="fdd-divider"></div>
+          <div class="fdd-option" data-v="published"     onclick="toggleOpt('status','published',this)"><span class="fdd-cb"></span>Published</div>
+          <div class="fdd-option" data-v="pending-pub"   onclick="toggleOpt('status','pending-pub',this)"><span class="fdd-cb"></span>Pending Approval</div>
+          <div class="fdd-option" data-v="needs-review"  onclick="toggleOpt('status','needs-review',this)"><span class="fdd-cb"></span>Needs Review</div>
+          <div class="fdd-option" data-v="pending-unpub" onclick="toggleOpt('status','pending-unpub',this)"><span class="fdd-cb"></span>Pending Unpublish</div>
+          <div class="fdd-option" data-v="unpublished"   onclick="toggleOpt('status','unpublished',this)"><span class="fdd-cb"></span>Unpublished</div>
+          <div class="fdd-option" data-v="error"         onclick="toggleOpt('status','error',this)"><span class="fdd-cb"></span>Publish Error</div>
+          <div class="fdd-option" data-v="none"          onclick="toggleOpt('status','none',this)"><span class="fdd-cb"></span>Not Published</div>
+        </div>
+      </div>
+      <button class="filter-clear" id="filter-clear-btn"><i class="ti ti-x" style="font-size:11px"></i>Clear all</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row" id="stats"></div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table>
+          <colgroup>
+            <col class="c-yacht">
+            <col class="c-broker">
+            <col class="c-builder">
+            <col class="c-eps">
+            <col class="c-updated">
+            <col class="c-action">
+          </colgroup>
+          <thead>
+            <tr>
+              <th data-col="name">Yacht <i class="ti ti-selector sort-icon"></i></th>
+              <th data-col="broker">Broker <i class="ti ti-selector sort-icon"></i></th>
+              <th data-col="builder">Builder <i class="ti ti-selector sort-icon"></i></th>
+              <th>Marketplaces</th>
+              <th data-col="updated">Last updated <i class="ti ti-selector sort-icon"></i></th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DRAWER OVERLAY -->
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true">
+  <div class="drawer" id="drawer"></div>
+</div>
+
+<script>
+// Status constants
+const ST = {
+  PUBLISHED:     "published",
+  PENDING_PUB:   "pending-pub",
+  NEEDS_REVIEW:  "needs-review",
+  PENDING_UNPUB: "pending-unpub",
+  UNPUBLISHED:   "unpublished",
+  ERROR:         "error",
+  NONE:          "none",
+};
+
+const EP_CFG = {
+  [ST.PUBLISHED]:     { cls:"ep-published",     icon:"ti-circle-check",  label:"Published" },
+  [ST.PENDING_PUB]:   { cls:"ep-pending-pub",   icon:"ti-clock",         label:"Pending Approval" },
+  [ST.NEEDS_REVIEW]:  { cls:"ep-needs-review",  icon:"ti-refresh-alert", label:"Needs Review" },
+  [ST.PENDING_UNPUB]: { cls:"ep-pending-unpub", icon:"ti-clock-pause",   label:"Pending Unpublish" },
+  [ST.UNPUBLISHED]:   { cls:"ep-unpublished",   icon:"ti-circle-x",      label:"Unpublished" },
+  [ST.ERROR]:         { cls:"ep-error",         icon:"ti-alert-circle",  label:"Publish Error" },
+  [ST.NONE]:          { cls:"ep-none",          icon:"ti-circle-dashed", label:"Not Published" },
+};
+
+const STATUS_PRIORITY = [ST.ERROR, ST.PENDING_PUB, ST.NEEDS_REVIEW, ST.PENDING_UNPUB, ST.PUBLISHED, ST.UNPUBLISHED, ST.NONE];
+
+const YACHTS = [
+  {
+    id:1, name:"Lady Anastasia", loa:"52m", year:2018, brand:"fraser",
+    broker:"James Harrington", brokerage:"Fraser Yachts", builder:"Lürssen",
+    updatedBy:"M. Chen", updatedAt:"May 13, 2026",
+    endpoints:[
+      { id:"yw-fr",    label:"Yachtworld (Fraser)", status:ST.PUBLISHED,    cobrok:"yes", request:"—",                  approval:"Request approved",  requestedBy:"J. Harrington", requestedAt:"May 12, 2026", lastUpdatedBy:"M. Chen",      lastUpdatedAt:"May 13, 2026", url:"https://yachtworld.com/123", isBrand:false, error:null },
+      { id:"yatco-fr", label:"Yatco (Fraser)",      status:ST.NEEDS_REVIEW, cobrok:"yes", request:"—",                  approval:"Request approved",  requestedBy:"J. Harrington", requestedAt:"May 8, 2026",  lastUpdatedBy:"M. Chen",      lastUpdatedAt:"May 13, 2026", url:"https://yatco.com/lady-anastasia", isBrand:false, error:null, reviewNote:"Yacht name changed — listing outdated." },
+      { id:"fr-web",   label:"Fraser website",      status:ST.PUBLISHED,    cobrok:"n/a", request:"—",                  approval:"Request approved",  requestedBy:"J. Harrington", requestedAt:"May 10, 2026", lastUpdatedBy:"M. Chen",      lastUpdatedAt:"May 13, 2026", url:"https://fraser.com/lady-anastasia", isBrand:true, error:null },
+    ]
+  },
+  {
+    id:2, name:"Aqua Libre", loa:"44m", year:2015, brand:"nj",
+    broker:"Sophie Beaumont", brokerage:"N&J Management", builder:"Feadship",
+    updatedBy:"—", updatedAt:"—",
+    endpoints:[
+      { id:"yw-nj",    label:"Yachtworld (N&J)", status:ST.NONE, cobrok:"no",  request:"—", approval:"—", requestedBy:"—", requestedAt:"—", lastUpdatedBy:"—", lastUpdatedAt:"—", url:"", isBrand:false, error:null },
+      { id:"yatco-nj", label:"Yatco (N&J)",      status:ST.NONE, cobrok:"no",  request:"—", approval:"—", requestedBy:"—", requestedAt:"—", lastUpdatedBy:"—", lastUpdatedAt:"—", url:"", isBrand:false, error:null },
+      { id:"nj-web",   label:"N&J website",      status:ST.NONE, cobrok:"n/a", request:"—", approval:"—", requestedBy:"—", requestedAt:"—", lastUpdatedBy:"—", lastUpdatedAt:"—", url:"", isBrand:true,  error:null },
+    ]
+  },
+  {
+    id:3, name:"Silver Moon", loa:"63m", year:2021, brand:"fraser",
+    broker:"Carlos Medina", brokerage:"Fraser Yachts", builder:"Benetti",
+    updatedBy:"R. Torres", updatedAt:"May 10, 2026",
+    endpoints:[
+      { id:"yw-fr",    label:"Yachtworld (Fraser)", status:ST.PUBLISHED,     cobrok:"yes", request:"—",                   approval:"Request approved", requestedBy:"C. Medina", requestedAt:"May 2, 2026",  lastUpdatedBy:"R. Torres", lastUpdatedAt:"May 10, 2026", url:"https://yachtworld.com/456", isBrand:false, error:null },
+      { id:"yatco-fr", label:"Yatco (Fraser)",      status:ST.PENDING_UNPUB, cobrok:"no",  request:"Unpublish requested", approval:"Pending approval", requestedBy:"C. Medina", requestedAt:"May 9, 2026",  lastUpdatedBy:"R. Torres", lastUpdatedAt:"May 10, 2026", url:"", isBrand:false, error:null },
+      { id:"fr-web",   label:"Fraser website",      status:ST.PUBLISHED,     cobrok:"n/a", request:"—",                   approval:"Request approved", requestedBy:"C. Medina", requestedAt:"May 2, 2026",  lastUpdatedBy:"R. Torres", lastUpdatedAt:"May 10, 2026", url:"https://fraser.com/silver-moon", isBrand:true, error:null },
+    ]
+  },
+  {
+    id:4, name:"Blue Horizon", loa:"38m", year:2012, brand:"nj",
+    broker:"Anna Kowalski", brokerage:"N&J Management", builder:"Heesen",
+    updatedBy:"A. Kowalski", updatedAt:"May 14, 2026",
+    endpoints:[
+      { id:"yw-nj",    label:"Yachtworld (N&J)", status:ST.PENDING_PUB, cobrok:"yes", request:"Publish requested", approval:"Pending approval", requestedBy:"A. Kowalski", requestedAt:"May 14, 2026", lastUpdatedBy:"A. Kowalski", lastUpdatedAt:"May 14, 2026", url:"", isBrand:false, error:null },
+      { id:"yatco-nj", label:"Yatco (N&J)",      status:ST.NONE,        cobrok:"no",  request:"—",                 approval:"—",               requestedBy:"—",           requestedAt:"—",            lastUpdatedBy:"—",           lastUpdatedAt:"—",            url:"", isBrand:false, error:null },
+      { id:"nj-web",   label:"N&J website",      status:ST.PENDING_PUB, cobrok:"n/a", request:"Publish requested", approval:"Pending approval", requestedBy:"A. Kowalski", requestedAt:"May 14, 2026", lastUpdatedBy:"A. Kowalski", lastUpdatedAt:"May 14, 2026", url:"", isBrand:true,  error:null },
+    ]
+  },
+  {
+    id:5, name:"Serenity Now", loa:"55m", year:2019, brand:"fraser",
+    broker:"James Harrington", brokerage:"Fraser Yachts", builder:"Feadship",
+    updatedBy:"R. Torres", updatedAt:"May 15, 2026",
+    endpoints:[
+      { id:"yw-fr",    label:"Yachtworld (Fraser)", status:ST.ERROR,       cobrok:"no",  request:"—", approval:"—", requestedBy:"—", requestedAt:"—", lastUpdatedBy:"R. Torres", lastUpdatedAt:"May 15, 2026", url:"", isBrand:false, error:"Missing main image" },
+      { id:"yatco-fr", label:"Yatco (Fraser)",      status:ST.ERROR,       cobrok:"no",  request:"—", approval:"—", requestedBy:"—", requestedAt:"—", lastUpdatedBy:"R. Torres", lastUpdatedAt:"May 15, 2026", url:"", isBrand:false, error:"Invalid LOA format" },
+      { id:"fr-web",   label:"Fraser website",      status:ST.UNPUBLISHED, cobrok:"n/a", request:"—", approval:"—", requestedBy:"—", requestedAt:"—", lastUpdatedBy:"R. Torres", lastUpdatedAt:"May 15, 2026", url:"", isBrand:true,  error:null },
+    ]
+  },
+  {
+    id:6, name:"Tidal Wave", loa:"41m", year:2016, brand:"nj",
+    broker:"Marco Visser", brokerage:"N&J Management", builder:"Amels",
+    updatedBy:"L. Petit", updatedAt:"May 7, 2026",
+    endpoints:[
+      { id:"yw-nj",    label:"Yachtworld (N&J)", status:ST.PUBLISHED, cobrok:"yes", request:"—", approval:"Request approved", requestedBy:"M. Visser", requestedAt:"Apr 28, 2026", lastUpdatedBy:"L. Petit", lastUpdatedAt:"May 7, 2026", url:"https://yachtworld.com/789", isBrand:false, error:null },
+      { id:"yatco-nj", label:"Yatco (N&J)",      status:ST.PUBLISHED, cobrok:"yes", request:"—", approval:"Request approved", requestedBy:"M. Visser", requestedAt:"Apr 28, 2026", lastUpdatedBy:"L. Petit", lastUpdatedAt:"May 7, 2026", url:"", isBrand:false, error:null },
+      { id:"nj-web",   label:"N&J website",      status:ST.PUBLISHED, cobrok:"n/a", request:"—", approval:"Request approved", requestedBy:"M. Visser", requestedAt:"Apr 28, 2026", lastUpdatedBy:"L. Petit", lastUpdatedAt:"May 7, 2026", url:"https://njmanagement.com/tidal-wave", isBrand:true, error:null },
+    ]
+  },
+];
+
+const ROLES = {
+  admin:     { label:"Admin",          canApprove:true,  canCobrok:true,  seesAllBrands:true  },
+  marketing: { label:"Marketing user", canApprove:true,  canCobrok:false, seesAllBrands:false },
+};
+
+let sortCol="name", sortAsc=true;
+let fBrand="all", fStatus="all", fType="all", fMarketplace="all";
+let search="", role="admin";
+
+function overallStatus(y) {
+  const ss = y.endpoints.map(e => e.status);
+  for (const s of STATUS_PRIORITY) { if (ss.includes(s)) return s; }
+  return ST.NONE;
+}
+
+function yachtNeedsAction(y) {
+  return y.endpoints.some(e => [ST.ERROR, ST.PENDING_PUB, ST.PENDING_UNPUB, ST.NEEDS_REVIEW].includes(e.status));
+}
+
+function filtered() {
+  return YACHTS.filter(y => {
+    if (filters.brand.size       && !filters.brand.has(y.brand))                                        return false;
+    if (filters.status.size      && !y.endpoints.some(e => filters.status.has(e.status)))              return false;
+    if (filters.marketplace.size && !y.endpoints.some(e => filters.marketplace.has(e.id)))             return false;
+    if (search) {
+      const q = search.toLowerCase();
+      if (![y.name,y.broker,y.builder,y.brokerage].some(s => s.toLowerCase().includes(q))) return false;
+    }
+    return true;
+  }).sort((a, b) => {
+    let va, vb;
+    if      (sortCol==="name")    { va=a.name;    vb=b.name; }
+    else if (sortCol==="broker")  { va=a.broker;  vb=b.broker; }
+    else if (sortCol==="builder") { va=a.builder; vb=b.builder; }
+    else if (sortCol==="updated") { va=a.updatedAt==="—"?"0":a.updatedAt; vb=b.updatedAt==="—"?"0":b.updatedAt; }
+    else                          { va=overallStatus(a); vb=overallStatus(b); }
+    return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+  });
+}
+
+const EP_SHORT = {
+  "yw-fr":"YW FR","yw-nj":"YW NJ",
+  "yatco-fr":"Yatco FR","yatco-nj":"Yatco NJ",
+  "fr-web":"FR web","nj-web":"NJ web"
+};
+
+function epBadgeHTML(ep) {
+  const cfg = EP_CFG[ep.status] || EP_CFG[ST.NONE];
+  const lbl = EP_SHORT[ep.id] || ep.label;
+  return `<span class="ep-badge ${cfg.cls}"><i class="ti ${cfg.icon}" aria-hidden="true"></i>${lbl}</span>`;
+}
+
+const VISIBLE_COUNT = 2; // how many badges show before +N
+
+function epCellHTML(endpoints) {
+  const visible = endpoints.slice(0, VISIBLE_COUNT);
+  const hidden  = endpoints.slice(VISIBLE_COUNT);
+
+  const visibleBadges = visible.map(epBadgeHTML).join("");
+
+  if (!hidden.length) {
+    return `<div class="ep-cell">${visibleBadges}</div>`;
+  }
+
+  // build popover rows for ALL endpoints (full picture on hover)
+  const popoverRows = endpoints.map(ep => {
+    const cfg = EP_CFG[ep.status] || EP_CFG[ST.NONE];
+    const lbl = EP_SHORT[ep.id] || ep.label;
+    return `<div class="ep-popover-row">
+      <span class="ep-popover-name">${ep.label}</span>
+      <span class="ep-badge ${cfg.cls}" style="font-size:9px;padding:2px 6px"><i class="ti ${cfg.icon}" aria-hidden="true"></i>${lbl}</span>
+    </div>`;
+  }).join("");
+
+  return `<div class="ep-cell">
+    ${visibleBadges}
+    <div class="ep-popover-wrap">
+      <span class="ep-overflow">+${hidden.length}</span>
+      <div class="ep-popover">${popoverRows}</div>
+    </div>
+  </div>`;
+}
+
+function renderStats(rows) {
+  const allEps = YACHTS.flatMap(y => y.endpoints);
+  const errCount = allEps.filter(e => e.status === ST.ERROR).length;
+  const pendingCount = allEps.filter(e => e.status === ST.PENDING_PUB).length;
+  document.getElementById("stats").innerHTML = `
+    <div class="stat-card"><div class="stat-val">${rows.length}</div><div class="stat-label">Yachts shown</div></div>
+    <div class="stat-card"><div class="stat-val">${allEps.filter(e=>e.status===ST.PUBLISHED).length}</div><div class="stat-label">Published endpoints</div></div>
+    <div class="stat-card"><div class="stat-val amber">${pendingCount}</div><div class="stat-label">Pending approval</div></div>
+    <div class="stat-card"><div class="stat-val amber">${allEps.filter(e=>e.status===ST.NEEDS_REVIEW).length}</div><div class="stat-label">Needs review</div></div>
+    <div class="stat-card"><div class="stat-val red">${errCount}</div><div class="stat-label">Publish errors</div></div>
+  `;
+}
+
+function renderTable() {
+  const rows = filtered();
+  const r = ROLES[role];
+  const tbody = document.getElementById("tbody");
+  if (!rows.length) {
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="6">No yachts match the current filters.</td></tr>`;
+    renderStats(rows); return;
+  }
+
+  tbody.innerHTML = rows.map(y => {
+    const hasError      = y.endpoints.some(e => e.status === ST.ERROR);
+    const hasPendingPub = y.endpoints.some(e => e.status === ST.PENDING_PUB);
+    const hasReview     = y.endpoints.some(e => e.status === ST.NEEDS_REVIEW);
+    const hasPendingUnpub = y.endpoints.some(e => e.status === ST.PENDING_UNPUB);
+
+    // Error detail pills below badges
+    const errorDetails = y.endpoints.filter(e => e.status === ST.ERROR && e.error).map(e =>
+      `<div class="ep-error-detail"><i class="ti ti-alert-circle" aria-hidden="true"></i><strong>${EP_SHORT[e.id]}:</strong>&nbsp;${e.error}</div>`
+    ).join("");
+
+    // Action buttons: contextual
+    let actionBtns = `<button class="manage-btn" onclick="openDrawer(${y.id})"><i class="ti ti-settings" aria-hidden="true"></i>Manage</button>`;
+    if (r.canApprove && hasPendingPub) {
+      actionBtns = `<button class="approve-btn" onclick="openDrawer(${y.id})"><i class="ti ti-circle-check" aria-hidden="true"></i>Review &amp; Approve</button>` + actionBtns;
+    }
+    if (r.canApprove && (hasError || hasReview)) {
+      actionBtns = `<button class="apply-btn" onclick="openDrawer(${y.id})"><i class="ti ti-refresh" aria-hidden="true"></i>Apply Changes</button>` + actionBtns;
+    }
+
+    return `
+      <tr>
+        <td>
+          <div class="yacht-name">${y.name}</div>
+          <div class="yacht-meta">${y.loa} · ${y.year}</div>
+        </td>
+        <td>
+          <div>${y.broker}</div>
+          <div style="font-size:var(--fs-11);color:var(--text-secondary)">${y.brokerage}</div>
+          <span class="brand-badge brand-${y.brand}">${y.brand==="fraser"?"Fraser":"N&J"}</span>
+        </td>
+        <td style="color:var(--text-secondary)">${y.builder}</td>
+        <td style="overflow:visible;position:relative">
+          ${epCellHTML(y.endpoints)}
+          ${errorDetails}
+        </td>
+        <td>
+          <div class="updated-by">${y.updatedBy}</div>
+          <div class="updated-at">${y.updatedAt}</div>
+        </td>
+        <td><div class="action-cell">${actionBtns}</div></td>
+      </tr>
+    `;
+  }).join("");
+  renderStats(rows);
+}
+
+function openDrawer(id) {
+  const y = YACHTS.find(y => y.id === id);
+  const r = ROLES[role];
+
+  const roleNotes = {
+    admin:     { icon:"ti-shield-check", text:"Admin — full access across all brands. Can approve requests and edit co-brokerage." },
+    marketing: { icon:"ti-speakerphone",  text:"Marketing user — can approve requests for assigned brand scope. Co-brokerage not editable." },
+  };
+  const rn = roleNotes[role];
+
+  const epRows = y.endpoints.map(ep => {
+    const cfg = EP_CFG[ep.status] || EP_CFG[ST.NONE];
+    const isUnpublishReq = ep.request === "Unpublish requested";
+    const showConditional = ep.isBrand && isUnpublishReq;
+    const isPendingPub   = ep.status === ST.PENDING_PUB;
+    const isPendingUnpub = ep.status === ST.PENDING_UNPUB;
+    const isError        = ep.status === ST.ERROR;
+    const isReview       = ep.status === ST.NEEDS_REVIEW;
+
+    // Error banner
+    const errorBanner = isError && ep.error
+      ? `<div class="error-banner"><i class="ti ti-alert-circle" aria-hidden="true"></i><div class="error-banner-text"><span class="error-banner-label">Action required</span>${ep.error}</div></div>`
+      : "";
+
+    // Review banner
+    const reviewBanner = isReview && ep.reviewNote
+      ? `<div class="review-banner"><i class="ti ti-refresh-alert" aria-hidden="true"></i><span>${ep.reviewNote}</span></div>`
+      : "";
+
+    // Approval dropdown
+    const appSel = r.canApprove
+      ? `<select>
+          <option ${ep.approval==="—"?"selected":""}>—</option>
+          <option ${ep.approval==="Pending approval"?"selected":""}>Pending approval</option>
+          <option ${ep.approval==="Request approved"?"selected":""}>Request approved</option>
+          <option ${ep.approval==="Rejected"?"selected":""}>Rejected</option>
+          <option ${ep.approval==="Unpublished"?"selected":""}>Unpublished</option>
+        </select>`
+      : `<select disabled><option selected>${ep.approval}</option></select>
+         <div class="field-locked-note"><i class="ti ti-lock"></i>Not editable for ${r.label}</div>`;
+
+    // Co-brokerage
+    const cobrokField = ep.cobrok === "n/a"
+      ? `<div class="field-read dim">Not available</div>`
+      : !r.canCobrok
+        ? `<select disabled><option selected>${ep.cobrok==="yes"?"Yes":"No"}</option></select>
+           <div class="field-locked-note"><i class="ti ti-lock"></i>Not editable for ${r.label}</div>`
+        : `<select>
+            <option ${ep.cobrok==="yes"?"selected":""}>Yes</option>
+            <option ${ep.cobrok==="no"?"selected":""}>No</option>
+            <option>Not available</option>
+          </select>`;
+
+    // Conditional unpublish fields
+    const conditional = showConditional
+      ? `<div class="conditional-fields">
+          <div class="field-group"><label class="conditional-label"><i class="ti ti-alert-triangle"></i>Show as SOLD</label><select><option>Yes</option><option>No</option></select></div>
+          <div class="field-group"><label class="conditional-label"><i class="ti ti-alert-triangle"></i>Hide from website</label><select><option>Yes</option><option>No</option></select></div>
+        </div>`
+      : ep.isBrand
+        ? `<div class="conditional-note"><i class="ti ti-info-circle"></i>Show as SOLD and Hide from website appear when Unpublish requested is selected.</div>`
+        : "";
+
+    // Action row in drawer
+    let epActionRow = "";
+    if (r.canApprove) {
+      if (isPendingPub || isPendingUnpub) {
+        epActionRow = `<div class="ep-action-row">
+          <button class="ep-reject-btn"><i class="ti ti-x" aria-hidden="true"></i>Reject</button>
+          <button class="ep-approve-btn"><i class="ti ti-circle-check" aria-hidden="true"></i>${isPendingPub ? "Approve Publish" : "Approve Unpublish"}</button>
+        </div>`;
+      } else if (isError || isReview) {
+        epActionRow = `<div class="ep-action-row">
+          <button class="ep-apply-btn"><i class="ti ti-refresh" aria-hidden="true"></i>Apply Changes</button>
+        </div>`;
+      }
+    }
+
+    const urlRow = ep.url
+      ? `<div class="listing-link"><i class="ti ti-external-link"></i><a href="${ep.url}" target="_blank">View listing</a></div>`
+      : `<div class="listing-link"><i class="ti ti-link"></i><span style="color:var(--text-muted)">URL auto-populated after publish confirmation</span></div>`;
+
+    const rowExtraClass = isError ? " has-error" : isReview ? " needs-review" : "";
+
+    return `
+      <div class="ep-row${rowExtraClass}">
+        <div class="ep-row-header">
+          <span class="ep-row-name">${ep.label}</span>
+          <span class="ep-badge ${cfg.cls}"><i class="ti ${cfg.icon}" aria-hidden="true"></i>${cfg.label}</span>
+        </div>
+        ${errorBanner}${reviewBanner}
+        <div class="ep-fields">
+          <div class="field-group"><label>Request</label><div class="field-read">${ep.request}</div></div>
+          <div class="field-group"><label>Approval status</label>${appSel}</div>
+          <div class="field-group"><label>Allow co-brokerage</label>${cobrokField}</div>
+          <div class="field-group"><label>Requested by</label>
+            <div class="field-read">${ep.requestedBy}</div>
+            ${ep.requestedAt!=="—" ? `<div class="field-read dim">${ep.requestedAt}</div>` : ""}
+          </div>
+        </div>
+        ${conditional}
+        <div class="ep-row-meta">
+          <div class="ep-meta-item"><span class="ep-meta-label">Last updated by</span><span class="ep-meta-value">${ep.lastUpdatedBy}</span></div>
+          <div class="ep-meta-item"><span class="ep-meta-label">Last updated at</span><span class="ep-meta-value">${ep.lastUpdatedAt}</span></div>
+        </div>
+        ${urlRow}
+        ${epActionRow}
+      </div>`;
+  }).join("");
+
+  document.getElementById("drawer").innerHTML = `
+    <div class="drawer-header">
+      <div>
+        <div class="drawer-title">${y.name}</div>
+        <div class="drawer-sub">
+          ${y.loa} · ${y.year} · ${y.builder} ·
+          <span class="brand-badge brand-${y.brand}">${y.brand==="fraser"?"Fraser":"N&J"}</span>
+        </div>
+        <div class="drawer-sub" style="margin-top:4px">CA broker: ${y.broker} · ${y.brokerage}</div>
+      </div>
+      <button class="close-btn" onclick="closeDrawer()" aria-label="Close"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="role-note"><i class="ti ${rn.icon}"></i><span>${rn.text}</span></div>
+    <div class="section-label">Endpoints</div>
+    ${epRows}
+    <div class="drawer-footer">
+      <button class="btn-cancel" onclick="closeDrawer()">Cancel</button>
+      <button class="btn-primary">Save changes</button>
+    </div>
+  `;
+
+  document.getElementById("modal").classList.add("open");
+}
+
+function closeDrawer() {
+  document.getElementById("modal").classList.remove("open");
+}
+
+document.getElementById("modal").addEventListener("click", e => {
+  if (e.target === document.getElementById("modal")) closeDrawer();
+});
+
+document.getElementById("search").addEventListener("input", e => { search = e.target.value; renderTable(); });
+document.getElementById("role-sel").addEventListener("change", e => { role = e.target.value; renderTable(); });
+
+// ── MULTI-SELECT FILTER STATE ──
+const filters = { brand: new Set(), type: new Set(), marketplace: new Set(), status: new Set() };
+
+const FILTER_LABELS = { brand:"Brand", type:"Type", marketplace:"Marketplace", status:"Status" };
+
+function toggleFdd(id) {
+  const el = document.getElementById(id);
+  const isOpen = el.classList.contains("open");
+  document.querySelectorAll(".fdd").forEach(d => d.classList.remove("open"));
+  if (!isOpen) el.classList.add("open");
+}
+
+document.addEventListener("click", e => {
+  if (!e.target.closest(".fdd")) document.querySelectorAll(".fdd").forEach(d => d.classList.remove("open"));
+});
+
+function selectAll(key, el) {
+  // clicking All clears all specific selections and checks only All
+  filters[key].clear();
+  const fdd = document.getElementById("fdd-" + key);
+  fdd.querySelectorAll(".fdd-option").forEach(o => o.classList.remove("checked"));
+  el.classList.add("checked");
+  updateFilterUI();
+  renderTable();
+}
+
+function toggleOpt(key, val, el) {
+  const s = filters[key];
+  const fdd = document.getElementById("fdd-" + key);
+  const allOpt = fdd.querySelector(".fdd-all");
+
+  if (s.has(val)) {
+    s.delete(val);
+    el.classList.remove("checked");
+    // if nothing selected, revert to All
+    if (s.size === 0) allOpt.classList.add("checked");
+  } else {
+    s.add(val);
+    el.classList.add("checked");
+    // deselect All
+    allOpt.classList.remove("checked");
+  }
+  updateFilterUI();
+  renderTable();
+}
+
+function updateFilterUI() {
+  let anyActive = false;
+  ["brand","type","marketplace","status"].forEach(key => {
+    const s = filters[key];
+    const fdd = document.getElementById("fdd-" + key);
+    const lbl = document.getElementById("lbl-" + key);
+    const isActive = s.size > 0;
+    if (isActive) anyActive = true;
+    fdd.classList.toggle("active", isActive);
+
+    // remove old count badge
+    const existing = fdd.querySelector(".fdd-count");
+    if (existing) existing.remove();
+
+    if (!isActive) {
+      lbl.textContent = FILTER_LABELS[key];
+    } else {
+      const opts = [...fdd.querySelectorAll(".fdd-option:not(.fdd-all)")];
+      const names = opts.filter(o => s.has(o.dataset.v)).map(o => o.textContent.trim());
+      if (names.length === 1) {
+        lbl.textContent = names[0];
+      } else {
+        lbl.textContent = FILTER_LABELS[key];
+        const badge = document.createElement("span");
+        badge.className = "fdd-count";
+        badge.textContent = names.length;
+        fdd.querySelector(".fdd-trigger").insertBefore(badge, fdd.querySelector(".fdd-chevron"));
+      }
+    }
+  });
+  document.getElementById("filter-clear-btn").classList.toggle("visible", anyActive);
+}
+
+document.getElementById("filter-clear-btn").addEventListener("click", () => {
+  ["brand","type","marketplace","status"].forEach(key => {
+    filters[key].clear();
+    const fdd = document.getElementById("fdd-" + key);
+    fdd.querySelectorAll(".fdd-option").forEach(o => o.classList.remove("checked"));
+    fdd.querySelector(".fdd-all").classList.add("checked");
+  });
+  updateFilterUI();
+  renderTable();
+});
+
+document.querySelectorAll("th[data-col]").forEach(th => {
+  th.addEventListener("click", () => {
+    const col = th.dataset.col;
+    if (sortCol === col) sortAsc = !sortAsc;
+    else { sortCol = col; sortAsc = true; }
+    document.querySelectorAll("th").forEach(x => x.classList.remove("sorted"));
+    th.classList.add("sorted");
+    renderTable();
+  });
+});
+
+renderTable();
+</script>
+</body>
+</html>
