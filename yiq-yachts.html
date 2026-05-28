@@ -277,14 +277,49 @@ body {
 .list-dropdown-item:hover { background: var(--bg-soft); }
 .list-dropdown-item.active { background: var(--bg-soft); }
 
+/* Broker row — level 1 */
+.broker-row {
+  padding: var(--sp-9) var(--sp-12);
+  display: flex; align-items: center; gap: var(--sp-9);
+  cursor: pointer; transition: background .1s;
+}
+.broker-row:hover { background: var(--bg-soft); }
+.broker-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--fs-11); font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.broker-row-body { flex: 1; min-width: 0; }
+.broker-row-name { font-size: var(--fs-14); color: var(--text-primary); }
+.broker-row-sub  { font-size: var(--fs-11); color: var(--text-muted); }
+.broker-row-chevron { font-size: 14px; color: var(--text-muted); margin-left: auto; flex-shrink: 0; }
+
+/* Back button — level 2 */
+.dd-back {
+  padding: var(--sp-9) var(--sp-12);
+  display: flex; align-items: center; gap: var(--sp-6);
+  font-size: var(--fs-11); color: var(--text-secondary);
+  cursor: pointer; transition: background .1s;
+  border-bottom: 1px solid var(--border-soft);
+}
+.dd-back:hover { background: var(--bg-soft); }
+.dd-back i { font-size: 12px; }
+
+/* Level 2 broker header (non-clickable label) */
+.dd-broker-header {
+  padding: var(--sp-12) var(--sp-12) var(--sp-4);
+  display: flex; align-items: center; gap: var(--sp-9);
+}
+.dd-broker-header-name { font-size: var(--fs-14); font-weight: 500; color: var(--text-primary); }
+
 .list-item-icon {
   width: 28px; height: 28px; border-radius: var(--r-md);
   display: flex; align-items: center; justify-content: center;
   font-size: 14px; flex-shrink: 0; margin-top: 1px;
 }
-.list-item-icon.mine  { background: var(--green-bg); color: var(--green); }
-.list-item-icon.delegated { background: var(--blue-bg); color: var(--blue); }
-.list-item-icon.all   { background: var(--bg-soft); color: var(--text-secondary); border: 1px solid var(--border-soft); }
+.list-item-icon.mine      { background: var(--green-bg); color: var(--green); }
+.list-item-icon.delegated { background: var(--blue-bg);  color: var(--blue);  }
+.list-item-icon.all       { background: var(--bg-soft);  color: var(--text-secondary); border: 1px solid var(--border-soft); }
 
 .list-item-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .list-item-name { font-size: var(--fs-14); color: var(--text-primary); font-weight: 400; }
@@ -778,12 +813,16 @@ const ROLE_CONFIGS = {
     delegatedBrokers: [
       { id:"af", name:"Anton Farber",    initials:"A", color:"#392a1e" },
       { id:"mh", name:"Maryanne Hanlon", initials:"M", color:"#575ecf" },
+      { id:"rk", name:"Richard Kosta",   initials:"R", color:"#2b9667" },
     ],
     ownedByMe: ["Palm Beach Follow-ups"],
     delegatedLists: [
       { name:"Anton Private Selection",  broker:"Anton Farber",    brokerId:"af", count:12, visibility:"private" },
       { name:"Dubai Selection",          broker:"Anton Farber",    brokerId:"af", count:8,  visibility:"nj"      },
+      { name:"Monaco Superyachts",       broker:"Anton Farber",    brokerId:"af", count:4,  visibility:"private" },
       { name:"Maryanne Mediterranean",   broker:"Maryanne Hanlon", brokerId:"mh", count:5,  visibility:"private" },
+      { name:"Charter Prospects Q3",     broker:"Maryanne Hanlon", brokerId:"mh", count:9,  visibility:"nj"      },
+      { name:"Richard Pacific Selection",broker:"Richard Kosta",   brokerId:"rk", count:7,  visibility:"private" },
     ],
   },
   dual: {
@@ -835,60 +874,169 @@ function switchRole(role) {
 }
 
 /* ────────────────────────────────────────────────
-   LIST DROPDOWN
+   LIST DROPDOWN — two-level navigation
+   Level 1: My Lists + broker rows (when multiple brokers)
+   Level 2: Lists for a specific broker
 ──────────────────────────────────────────────── */
+let ddLevel    = 1;          // 1 = top, 2 = broker detail
+let ddBrokerId = null;       // which broker is drilled into
+
 function toggleListDropdown() {
   const dd = document.getElementById("listDropdown");
+  const opening = !dd.classList.contains("open");
   dd.classList.toggle("open");
-  if (dd.classList.contains("open")) {
+  if (opening) {
+    ddLevel = 1;
+    ddBrokerId = null;
     document.getElementById("listSearch").value = "";
-    filterListDropdown();
+    renderDropdownLevel();
     setTimeout(() => document.getElementById("listSearch").focus(), 50);
   }
 }
 
-function renderDropdownItems(filter = "") {
-  const cfg     = ROLE_CONFIGS[currentRole];
-  const scroll  = document.getElementById("listDropdownScroll");
-  const q       = filter.toLowerCase();
+/* ── Level router ── */
+function renderDropdownLevel(filter = "") {
+  const cfg = ROLE_CONFIGS[currentRole];
+  const hasDelegates = cfg.delegatedBrokers && cfg.delegatedBrokers.length > 0;
 
-  /* Build list data for this role */
+  // Single broker — skip level 1, show their lists inline alongside mine
+  if (hasDelegates && cfg.delegatedBrokers.length === 1) {
+    renderLevel1Flat(filter);
+  } else if (ddLevel === 2 && ddBrokerId) {
+    renderLevel2(filter);
+  } else {
+    renderLevel1(filter);
+  }
+}
+
+/* ── Level 1: My Lists + broker rows (multi-broker) ── */
+function renderLevel1(filter = "") {
+  const cfg    = ROLE_CONFIGS[currentRole];
+  const q      = filter.toLowerCase();
+  const scroll = document.getElementById("listDropdownScroll");
   const myLists = MY_LISTS.filter(l => cfg.ownedByMe.includes(l.name));
-
   let html = "";
 
-  /* ── All Yachts ── */
+  // All Yachts
   if (!q || "all yachts".includes(q)) {
-    html += listItem({ name:"All Yachts", meta:"", type:"all", count:null, active: selectedList === null });
+    html += listItemHTML({ name:"All Yachts", meta:"", type:"all", count:null, active: selectedList === null });
   }
 
-  /* ── My lists ── */
+  // My Lists
   const filteredMine = myLists.filter(l => !q || l.name.toLowerCase().includes(q));
   if (filteredMine.length) {
     html += `<div class="list-dropdown-section">My Lists</div>`;
     filteredMine.forEach(l => {
-      html += listItem({ name: l.name, meta:"Owner: You", type:"mine", count: l.count, active: selectedList === l.name });
+      html += listItemHTML({ name:l.name, meta:"Owner: You", type:"mine", count:l.count, active: selectedList === l.name });
     });
   }
 
-  /* ── Delegated lists ── */
-  const filteredDel = (cfg.delegatedLists || []).filter(l => !q || l.name.toLowerCase().includes(q));
-  if (filteredDel.length) {
-    html += `<div class="list-dropdown-section">Delegated Lists</div>`;
-    filteredDel.forEach(l => {
-      html += listItem({ name: l.name, meta:`Owner: ${l.broker}`, type:"delegated", count: l.count, active: selectedList === l.name, broker: l.broker });
+  // Broker rows
+  const brokers = cfg.delegatedBrokers || [];
+  const filteredBrokers = brokers.filter(b => !q || b.name.toLowerCase().includes(q));
+  if (filteredBrokers.length) {
+    html += `<div class="list-dropdown-section">Broker Lists</div>`;
+    filteredBrokers.forEach(b => {
+      const bLists = (cfg.delegatedLists || []).filter(l => l.brokerId === b.id);
+      html += `
+        <div class="broker-row" onclick="drillIntoBroker('${b.id}')">
+          <div class="broker-avatar" style="background:${b.color}">${b.initials}</div>
+          <div class="broker-row-body">
+            <div class="broker-row-name">${b.name}</div>
+            <div class="broker-row-sub">${bLists.length} list${bLists.length !== 1 ? "s" : ""}</div>
+          </div>
+          <i class="ti ti-chevron-right broker-row-chevron"></i>
+        </div>`;
     });
   }
 
-  /* No broker access message */
-  if (currentRole === "broker" && !cfg.delegatedLists?.length) {
-    /* nothing extra to show */
-  }
-
-  scroll.innerHTML = html || `<div style="padding:var(--sp-12) var(--sp-15);font-size:var(--fs-11);color:var(--text-muted)">No lists found</div>`;
+  if (!html) html = `<div style="padding:var(--sp-12) var(--sp-15);font-size:var(--fs-11);color:var(--text-muted)">No lists found</div>`;
+  scroll.innerHTML = html;
 }
 
-function listItem({ name, meta, type, count, active, broker }) {
+/* ── Level 1 flat: single broker — show all lists together ── */
+function renderLevel1Flat(filter = "") {
+  const cfg    = ROLE_CONFIGS[currentRole];
+  const q      = filter.toLowerCase();
+  const scroll = document.getElementById("listDropdownScroll");
+  const myLists = MY_LISTS.filter(l => cfg.ownedByMe.includes(l.name));
+  let html = "";
+
+  if (!q || "all yachts".includes(q)) {
+    html += listItemHTML({ name:"All Yachts", meta:"", type:"all", count:null, active: selectedList === null });
+  }
+
+  const filteredMine = myLists.filter(l => !q || l.name.toLowerCase().includes(q));
+  if (filteredMine.length) {
+    html += `<div class="list-dropdown-section">My Lists</div>`;
+    filteredMine.forEach(l => {
+      html += listItemHTML({ name:l.name, meta:"Owner: You", type:"mine", count:l.count, active: selectedList === l.name });
+    });
+  }
+
+  const broker = cfg.delegatedBrokers[0];
+  const bLists = (cfg.delegatedLists || []).filter(l => l.brokerId === broker.id)
+    .filter(l => !q || l.name.toLowerCase().includes(q));
+  if (bLists.length) {
+    html += `<div class="list-dropdown-section">${broker.name}</div>`;
+    bLists.forEach(l => {
+      html += listItemHTML({ name:l.name, meta:`Owner: ${l.broker}`, type:"delegated", count:l.count, active: selectedList === l.name });
+    });
+  }
+
+  if (!html) html = `<div style="padding:var(--sp-12) var(--sp-15);font-size:var(--fs-11);color:var(--text-muted)">No lists found</div>`;
+  scroll.innerHTML = html;
+}
+
+/* ── Level 2: lists for a specific broker ── */
+function renderLevel2(filter = "") {
+  const cfg    = ROLE_CONFIGS[currentRole];
+  const q      = filter.toLowerCase();
+  const scroll = document.getElementById("listDropdownScroll");
+  const broker = cfg.delegatedBrokers.find(b => b.id === ddBrokerId);
+  const bLists = (cfg.delegatedLists || []).filter(l => l.brokerId === ddBrokerId)
+    .filter(l => !q || l.name.toLowerCase().includes(q));
+
+  let html = `
+    <div class="dd-back" onclick="backToLevel1()">
+      <i class="ti ti-arrow-left"></i> All brokers
+    </div>
+    <div class="dd-broker-header">
+      <div class="broker-avatar" style="background:${broker.color};width:24px;height:24px;font-size:10px">${broker.initials}</div>
+      <span class="dd-broker-header-name">${broker.name}</span>
+    </div>`;
+
+  if (bLists.length) {
+    bLists.forEach(l => {
+      html += listItemHTML({ name:l.name, meta:`Owner: ${l.broker}`, type:"delegated", count:l.count, active: selectedList === l.name });
+    });
+  } else {
+    html += `<div style="padding:var(--sp-12) var(--sp-15);font-size:var(--fs-11);color:var(--text-muted)">No lists found</div>`;
+  }
+
+  scroll.innerHTML = html;
+}
+
+function drillIntoBroker(brokerId) {
+  ddLevel    = 2;
+  ddBrokerId = brokerId;
+  document.getElementById("listSearch").value = "";
+  renderDropdownLevel();
+  document.getElementById("listSearch").focus();
+}
+
+function backToLevel1() {
+  ddLevel    = 1;
+  ddBrokerId = null;
+  document.getElementById("listSearch").value = "";
+  renderDropdownLevel();
+}
+
+function filterListDropdown() {
+  renderDropdownLevel(document.getElementById("listSearch").value);
+}
+
+function listItemHTML({ name, meta, type, count, active }) {
   const iconClass = type === "mine" ? "mine" : type === "delegated" ? "delegated" : "all";
   const icon      = type === "mine" ? "ti-user" : type === "delegated" ? "ti-users" : "ti-list";
   const badge     = type === "delegated" ? `<span class="delegated-badge"><i class="ti ti-share" style="font-size:9px"></i> Delegated</span>` : "";
@@ -904,15 +1052,15 @@ function listItem({ name, meta, type, count, active, broker }) {
     </div>`;
 }
 
-function filterListDropdown() {
-  renderDropdownItems(document.getElementById("listSearch").value);
-}
+/* Keep old name for renderDropdownItems calls elsewhere */
+function renderDropdownItems(filter) { renderDropdownLevel(filter || ""); }
 
 function selectList(name) {
   selectedList = name === "All Yachts" ? null : name;
   document.getElementById("listDropdown").classList.remove("open");
+  ddLevel = 1; ddBrokerId = null;
   updatePageState();
-  renderDropdownItems();
+  renderDropdownLevel();
 }
 
 /* ────────────────────────────────────────────────
