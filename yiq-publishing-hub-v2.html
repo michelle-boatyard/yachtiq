@@ -435,6 +435,7 @@ tr:hover td { background: var(--bg-base); }
 .ep-overflow {
   display: inline-flex;
   align-items: center;
+  gap: 3px;
   font-size: var(--fs-10);
   font-weight: 500;
   padding: 3px var(--sp-7);
@@ -444,42 +445,50 @@ tr:hover td { background: var(--bg-base); }
   color: var(--text-secondary);
   white-space: nowrap;
   flex-shrink: 0;
-  cursor: default;
+  cursor: pointer;
+  transition: border-color .12s, color .12s;
 }
+.ep-overflow:hover { border-color: var(--text-secondary); color: var(--text-primary); }
 
-/* popover */
-.ep-popover-wrap {
-  position: relative;
-  display: inline-flex;
-  flex-shrink: 0;
-}
-.ep-popover {
+/* popover — fixed to viewport, shown via JS */
+#ep-popover-global {
   display: none;
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  z-index: 200;
+  position: fixed;
+  z-index: 9999;
   background: var(--bg-card);
   border: 1px solid var(--border-soft);
-  border-radius: var(--r-lg);
-  box-shadow: 0 4px 20px rgba(27,27,27,.1);
-  padding: var(--sp-9);
-  min-width: 180px;
-  display: none;
+  border-radius: var(--r-xl);
+  box-shadow: 0 8px 32px rgba(27,27,27,.14);
+  min-width: 260px;
   flex-direction: column;
-  gap: var(--sp-6);
+  overflow: hidden;
+  pointer-events: none;
 }
-.ep-popover-wrap:hover .ep-popover,
-.ep-popover-wrap:focus-within .ep-popover { display: flex; }
+#ep-popover-global.visible { display: flex; }
+
+.ep-popover-header {
+  padding: var(--sp-9) var(--sp-12) var(--sp-7);
+  font-size: var(--fs-10);
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.98px;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--bg-soft);
+}
 .ep-popover-row {
   display: flex;
   align-items: center;
-  gap: var(--sp-9);
-  font-size: var(--fs-11);
-  color: var(--text-secondary);
-  white-space: nowrap;
+  justify-content: space-between;
+  gap: var(--sp-12);
+  padding: var(--sp-9) var(--sp-12);
+  border-bottom: 1px solid var(--border-soft);
 }
-.ep-popover-name { flex: 1; min-width: 0; }
+.ep-popover-row:last-child { border-bottom: none; }
+.ep-popover-left { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ep-popover-name { font-size: var(--fs-11); font-weight: 500; color: var(--text-primary); white-space: nowrap; }
+.ep-popover-error { font-size: 10px; color: var(--red-strong); display: flex; align-items: center; gap: 3px; white-space: nowrap; }
+.ep-popover-error i { font-size: 10px; }
 
 /* row-level error detail pill */
 .ep-error-detail {
@@ -747,10 +756,11 @@ tr:hover td { background: var(--bg-base); }
 
     <!-- Filters -->
     <div class="filter-bar" id="filter-bar">
+      <span style="font-size:var(--fs-11);font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.98px;white-space:nowrap;flex-shrink:0">Filters</span>
       <!-- Brand -->
       <div class="fdd" id="fdd-brand">
         <div class="fdd-trigger" onclick="toggleFdd('fdd-brand')">
-          <span class="fdd-label" id="lbl-brand">Brand</span>
+          <span class="fdd-label" id="lbl-brand">Brand: All</span>
           <i class="ti ti-chevron-down fdd-chevron" aria-hidden="true"></i>
         </div>
         <div class="fdd-panel">
@@ -763,7 +773,7 @@ tr:hover td { background: var(--bg-base); }
       <!-- Type -->
       <div class="fdd" id="fdd-type">
         <div class="fdd-trigger" onclick="toggleFdd('fdd-type')">
-          <span class="fdd-label" id="lbl-type">Type</span>
+          <span class="fdd-label" id="lbl-type">Type: All</span>
           <i class="ti ti-chevron-down fdd-chevron" aria-hidden="true"></i>
         </div>
         <div class="fdd-panel">
@@ -776,7 +786,7 @@ tr:hover td { background: var(--bg-base); }
       <!-- Marketplace -->
       <div class="fdd" id="fdd-marketplace">
         <div class="fdd-trigger" onclick="toggleFdd('fdd-marketplace')">
-          <span class="fdd-label" id="lbl-marketplace">Marketplace</span>
+          <span class="fdd-label" id="lbl-marketplace">Marketplace: All</span>
           <i class="ti ti-chevron-down fdd-chevron" aria-hidden="true"></i>
         </div>
         <div class="fdd-panel">
@@ -795,7 +805,7 @@ tr:hover td { background: var(--bg-base); }
       <!-- Status -->
       <div class="fdd" id="fdd-status">
         <div class="fdd-trigger" onclick="toggleFdd('fdd-status')">
-          <span class="fdd-label" id="lbl-status">Status</span>
+          <span class="fdd-label" id="lbl-status">Status: All</span>
           <i class="ti ti-chevron-down fdd-chevron" aria-hidden="true"></i>
         </div>
         <div class="fdd-panel">
@@ -849,6 +859,9 @@ tr:hover td { background: var(--bg-base); }
 <div class="modal-overlay" id="modal" role="dialog" aria-modal="true">
   <div class="drawer" id="drawer"></div>
 </div>
+
+<!-- Global endpoint popover -->
+<div id="ep-popover-global" role="tooltip"></div>
 
 <script>
 // Status constants
@@ -1001,22 +1014,16 @@ function epCellHTML(endpoints) {
     return `<div class="ep-cell">${visibleBadges}</div>`;
   }
 
-  // build popover rows for ALL endpoints (full picture on hover)
-  const popoverRows = endpoints.map(ep => {
-    const cfg = EP_CFG[ep.status] || EP_CFG[ST.NONE];
-    const lbl = EP_SHORT[ep.id] || ep.label;
-    return `<div class="ep-popover-row">
-      <span class="ep-popover-name">${ep.label}</span>
-      <span class="ep-badge ${cfg.cls}" style="font-size:9px;padding:2px 6px"><i class="ti ${cfg.icon}" aria-hidden="true"></i>${lbl}</span>
-    </div>`;
-  }).join("");
+  // encode endpoint data for the global popover
+  const popoverData = encodeURIComponent(JSON.stringify(endpoints.map(ep => ({
+    label: ep.label,
+    status: ep.status,
+    error: ep.error || null
+  }))));
 
   return `<div class="ep-cell">
     ${visibleBadges}
-    <div class="ep-popover-wrap">
-      <span class="ep-overflow">+${hidden.length}</span>
-      <div class="ep-popover">${popoverRows}</div>
-    </div>
+    <span class="ep-overflow" data-popover="${popoverData}" onmouseenter="showEpPopover(this,event)" onmouseleave="hideEpPopover()"><i class="ti ti-dots" style="font-size:10px" aria-hidden="true"></i>+${hidden.length}</span>
   </div>`;
 }
 
@@ -1237,6 +1244,10 @@ document.getElementById("role-sel").addEventListener("change", e => { role = e.t
 // ── MULTI-SELECT FILTER STATE ──
 const filters = { brand: new Set(), type: new Set(), marketplace: new Set(), status: new Set() };
 
+const FILTER_DEFAULT_LABELS = {
+  brand: "Brand: All", type: "Type: All",
+  marketplace: "Marketplace: All", status: "Status: All"
+};
 const FILTER_LABELS = { brand:"Brand", type:"Type", marketplace:"Marketplace", status:"Status" };
 
 function toggleFdd(id) {
@@ -1295,12 +1306,12 @@ function updateFilterUI() {
     if (existing) existing.remove();
 
     if (!isActive) {
-      lbl.textContent = FILTER_LABELS[key];
+      lbl.textContent = FILTER_DEFAULT_LABELS[key];
     } else {
       const opts = [...fdd.querySelectorAll(".fdd-option:not(.fdd-all)")];
       const names = opts.filter(o => s.has(o.dataset.v)).map(o => o.textContent.trim());
       if (names.length === 1) {
-        lbl.textContent = names[0];
+        lbl.textContent = FILTER_LABELS[key] + ": " + names[0];
       } else {
         lbl.textContent = FILTER_LABELS[key];
         const badge = document.createElement("span");
@@ -1335,7 +1346,42 @@ document.querySelectorAll("th[data-col]").forEach(th => {
   });
 });
 
+// ── ENDPOINT POPOVER ──
+const epPopoverEl = document.getElementById("ep-popover-global");
+
+function showEpPopover(trigger, event) {
+  const endpoints = JSON.parse(decodeURIComponent(trigger.dataset.popover));
+  const rows = endpoints.map(ep => {
+    const cfg = EP_CFG[ep.status] || EP_CFG[ST.NONE];
+    const errorLine = ep.error
+      ? `<div class="ep-popover-error"><i class="ti ti-alert-circle" aria-hidden="true"></i>${ep.error}</div>`
+      : "";
+    return `<div class="ep-popover-row">
+      <div class="ep-popover-left">
+        <span class="ep-popover-name">${ep.label}</span>
+        ${errorLine}
+      </div>
+      <span class="ep-badge ${cfg.cls}" style="flex-shrink:0"><i class="ti ${cfg.icon}" aria-hidden="true"></i>${cfg.label}</span>
+    </div>`;
+  }).join("");
+
+  epPopoverEl.innerHTML = `<div class="ep-popover-header">All marketplaces</div>${rows}`;
+
+  const rect = trigger.getBoundingClientRect();
+  const popW = 268;
+  let left = rect.left;
+  if (left + popW > window.innerWidth - 12) left = window.innerWidth - popW - 12;
+  epPopoverEl.style.top  = (rect.bottom + 8) + "px";
+  epPopoverEl.style.left = left + "px";
+  epPopoverEl.classList.add("visible");
+}
+
+function hideEpPopover() {
+  epPopoverEl.classList.remove("visible");
+}
+
 renderTable();
 </script>
+
 </body>
 </html>
